@@ -13,7 +13,7 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('https://pokeapi.co/api/v2/pokemon-species/aegislash', {
+      const response = await fetch('http://localhost:8080', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
