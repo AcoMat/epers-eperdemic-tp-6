@@ -1,3 +1,4 @@
+import SignInGoogle from '../SignInGoogleBtn/SignInGoogleBtn';
 import './Header.css'
 
 function Header() {
@@ -6,7 +7,7 @@ function Header() {
             <img src="logo.png" alt="Eperdemic" className="logo" />
             <nav>
                 <ul>
-                    <li>Iniciar Sesion</li>
+                    <SignInGoogle></SignInGoogle>
                 </ul>
             </nav>
         </header>

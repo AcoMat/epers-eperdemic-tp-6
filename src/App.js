@@ -13,13 +13,7 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:8080', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        }
-      })
+      const response = await fetch('http://localhost:8080/patogeno/todosLosPatogenos')
       const result = await response.json();
       setData(result)
       console.log(result)
@@ -37,7 +31,6 @@ function App() {
         <MapComponent></MapComponent>
       </main>
       <footer>
-        {data ? data.name : ("cargando")}
       </footer>
     </div>
   );
