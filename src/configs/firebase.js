@@ -7,12 +7,13 @@ import { GoogleAuthProvider } from "firebase/auth/web-extension";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyBQUy7ez0FjCuMcFYDUVaPVTwh__G_fwx4",
+  authDomain: "eperdemic-tp-6.firebaseapp.com",
+  projectId: "eperdemic-tp-6",
+  storageBucket: "eperdemic-tp-6.appspot.com",
+  messagingSenderId: "680596970964",
+  appId: "1:680596970964:web:8c44bcfe16b2078b484a41",
+  measurementId: "G-H92ZR2T2K1"
 };
 
 // Initialize Firebase
