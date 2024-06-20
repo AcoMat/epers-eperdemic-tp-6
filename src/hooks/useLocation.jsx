@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 const useLocation = () => {
@@ -13,6 +13,13 @@ const useLocation = () => {
       });
   }, []);
 
+  const setActualLocation = useCallback(() => {
+    navigator.geolocation.getCurrentPosition(({ coords }) => {
+      if(coords.latitude === location.latitude && coords.longitude === location.longitude) return;
+      setLocation({ latitude: coords.latitude, longitude: coords.longitude });
+    });
+  }, [setLocation, location])
+
   useEffect(() => {
     let interval;
     if (hasLocationPermission) {
@@ -23,14 +30,7 @@ const useLocation = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [hasLocationPermission]);
-
-  const setActualLocation = () => {
-    navigator.geolocation.getCurrentPosition(({ coords }) => {
-      console.log(coords);
-      setLocation({ latitude: coords.latitude, longitude: coords.longitude });
-    });
-  };
+  }, [hasLocationPermission, setActualLocation]);
 
   return { location, isLocationEnabled: hasLocationPermission};
 };

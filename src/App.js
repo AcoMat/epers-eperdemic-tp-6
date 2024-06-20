@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
-import uselocation from './hooks/useLocation'
 import MapComponent from './components/MapComponents/MapComponent';
 import useLocation from './hooks/useLocation';
 
 function App() {
   const [data, setData] = useState();
+  const { location } = useLocation()
 
   useEffect(() => {
     fetchData();
@@ -23,7 +23,13 @@ function App() {
     }
   };
 
-  const {location} = useLocation()  
+  useEffect(() => {
+    getDistritos()
+  }, [location])
+
+  const getDistritos = async () => {
+
+  }
 
   return (
     <div className="App">
@@ -33,7 +39,7 @@ function App() {
       <main>
         <p>{location.latitude}</p>
         <p>{location.longitude}</p>
-        <MapComponent></MapComponent>
+        <MapComponent location={location} />
       </main>
       <footer>
       </footer>
