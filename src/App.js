@@ -7,6 +7,7 @@ import useLocation from './hooks/useLocation';
 function App() {
   const [data, setData] = useState();
   const { location } = useLocation()
+  const [radiusInMeters, setRadiusInMeters] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -39,7 +40,7 @@ function App() {
       <main>
         <p>{location.latitude}</p>
         <p>{location.longitude}</p>
-        <MapComponent location={location} />
+        <MapComponent onRadiusChange={setRadiusInMeters} location={location} />
       </main>
       <footer>
       </footer>

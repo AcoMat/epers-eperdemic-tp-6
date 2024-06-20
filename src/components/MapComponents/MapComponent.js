@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Map, View } from "ol";
-import TileLayer from "ol/layer/Tile";
 import "ol/ol.css";
-import { OGCMapTile } from "ol/source";
-
-import VectorSource from "ol/source/Vector";
-import GeoJSON from "ol/format/GeoJSON.js";
-import VectorLayer from "ol/layer/Vector";
+import { fromLonLat } from 'ol/proj'
+import Attribution from "ol/control/Attribution";
+import {TileJSON} from "ol/source";
+import { Tile } from "ol/layer";
+import { defaults } from "ol/control/defaults";
+import Units, { METERS_PER_UNIT } from 'ol/proj/Units';
 
 const geojsonObject = {
   type: "FeatureCollection",
@@ -41,37 +41,54 @@ const geojsonObject = {
   ],
 };
 
-function MapComponent({ location }) {
+function MapComponent({ location, onRadiusChange }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
-    const osmLayer = new TileLayer({
-      source: new OGCMapTile({
-        url: "https://maps.gnosis.earth/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad",
-      }),
+
+    const attribution = new Attribution({
+      collapsible: false,
     });
 
-    const vectorSource = new VectorSource({
-      features: new GeoJSON().readFeatures(geojsonObject),
+    const source = new TileJSON({
+      url: `https://api.maptiler.com/maps/streets-v2/tiles.json?key=LQcHgRB6jDrmpJaRaBFZ`, // source URL
+      tileSize: 512,
+      crossOrigin: 'anonymous'
     });
 
-    const vectorLayer = new VectorLayer({
-      source: vectorSource,
-    });
-
-    const mapObject = new Map({
-      target: mapRef.current,
-      layers: [osmLayer, vectorLayer],
+    const map = new Map({
+      layers: [
+        new Tile({
+          source: source
+        })
+      ],
+      controls: defaults({attribution: false}).extend([attribution]),
+      target: 'map',
       view: new View({
-        center: [location.latitude, location.longitude],
-        zoom: 10,
-      }),
+        minZoom: 1,
+        maxZoom: 21,
+        constrainResolution: true,
+        center: fromLonLat([location.longitude, location.latitude]), // starting position [lng, lat]
+        zoom: 18 // starting zoom
+      })
     });
 
-    return () => {
-      mapObject.setTarget(null);
-    };
-  }, [location]);
+    map.getView().on("change:resolution", (event) => {measureDistance(map)})
+
+    measureDistance(map)
+    
+    return () => { 
+      map.getView().on("change:resolution", null)
+      map.setTarget(null) 
+    }
+  }, [location])
+
+  const measureDistance = (map) => {
+    const view = map.getView()
+    const currentZoomLevel = view.getZoom();
+    const metersPerPixel = 6371000 / Math.pow(2, currentZoomLevel); 
+    onRadiusChange(metersPerPixel * 10)
+  }
 
   return (
     <div style={{ height: "80vh", width: "100%" }} ref={mapRef} id="map" />
