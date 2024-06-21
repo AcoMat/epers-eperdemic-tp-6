@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
 import MapComponent from './components/MapComponents/MapComponent';
@@ -12,6 +12,14 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const optimizedSetRadiusInMeters = useCallback((radius) => {
+    setRadiusInMeters(radius)
+  }, [])
+
+  const optimizedLocationChanged = useCallback((radius) => {
+    console.log(radius)
+  }, [])
 
   const fetchData = async () => {
     try {
@@ -40,7 +48,7 @@ function App() {
       <main>
         <p>{location.latitude}</p>
         <p>{location.longitude}</p>
-        <MapComponent onRadiusChange={setRadiusInMeters} location={location} />
+        <MapComponent onLocationChanged={optimizedLocationChanged} onRadiusChange={optimizedSetRadiusInMeters} userLocation ={location} />
       </main>
       <footer>
       </footer>
