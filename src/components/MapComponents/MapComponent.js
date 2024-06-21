@@ -53,6 +53,7 @@ const geojsonObject = {
 
 const MapComponent = memo(({ userLocation, onRadiusChange, onLocationChanged }) => {
   const mapRef = useRef(null);
+  const goCenter = useRef(null)
   const [center, setCenter] = useState(userLocation)
 
   useEffect(() => {
@@ -74,6 +75,10 @@ const MapComponent = memo(({ userLocation, onRadiusChange, onLocationChanged }) 
     const metersPerPixel = 6371000 / Math.pow(2, currentZoomLevel); 
     onRadiusChange(metersPerPixel * 10)
   }, [onRadiusChange])
+
+  const followUser = () => {
+
+  }
 
   useEffect(() => {
 
@@ -122,18 +127,25 @@ const MapComponent = memo(({ userLocation, onRadiusChange, onLocationChanged }) 
 
     map.getView().on("change:resolution", (event) => {measureDistance(map)})
     map.getView().on("change:center", (event) => {changeCentralPosition(map)})
+    goCenter.current = () => { 
+      map.getView().setCenter(fromLonLat([userLocation.longitude, userLocation.latitude])) 
+    }
 
     measureDistance(map)
 
     return () => { 
       map.getView().on("change:resolution", null)
       map.getView().on("change:center", null)
-      map.setTarget(null) 
+      map.setTarget(null)
+      goCenter.current = null
     }
   }, [userLocation, measureDistance, changeCentralPosition])
 
   return (
-    <div style={{ height: "80vh", width: "100%" }} ref={mapRef} id="map" />
+    <div style={{ height: "80vh", width: "100%", position: "relative" }}>
+      <div style={{ height: "100%", width: "100%" }} ref={mapRef} id="map" />
+      <button style={{position: "absolute", bottom: 0, left: 0}} onClick={goCenter.current}>Follow user</button>
+    </div>
   );
 }, arePropsEquals);
 
