@@ -1,32 +1,30 @@
-const getDesignToken = (mode) => ({
+import { createTheme } from "@mui/material";
+
+const themee = createTheme({
     palette: {
         mode: 'light',
         primary: {
-            main: '#a15097',
+            main: '#702b67',
         },
         secondary: {
-            main: '#f3f0e0'
+            main: '#FFD9E1'
         },
         background: {
-            default: mode === 'light' ? '#eddded' : '#423741'
+            default: true === 'light' ? '#eddded' : '#423741'
         }
     },
     components: {
         MuiBottomNavigationAction: {
             styleOverrides: {
                 label: ({theme}) => ({
-                    color: mode === 'light' ? theme.palette.primary.main : theme.palette.secondary.main
+                    color: theme.palette.primary.light
                 }),
                 root: ({theme}) => ({
                     '&.Mui-selected .MuiSvgIcon-root': {
-                        backgroundColor: mode === 'light' ? theme.palette.primary.light : theme.palette.primary.light,
+                        backgroundColor: theme.palette.primary.light,
                         paddingLeft: 8,
                         paddingRight: 8,
-                        borderRadius: 12,
-                        fill: mode === 'light' ? theme.palette.primary.dark : theme.palette.secondary.light
-                    },
-                    '& .MuiSvgIcon-root': {
-                        fill: mode === 'light' ? theme.palette.primary.main : theme.palette.secondary.light
+                        borderRadius: 12
                     }
                 }),
             },
@@ -34,7 +32,7 @@ const getDesignToken = (mode) => ({
         MuiIcon: {
             styleOverrides: {
                 colorSecondary: {
-                    backgroundColor: "black"
+                    backgrndColor: "red"
                 }
             }
         },
@@ -53,5 +51,3 @@ const getDesignToken = (mode) => ({
             }
         }
 });
-
-export default getDesignToken;

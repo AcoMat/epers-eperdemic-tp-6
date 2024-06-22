@@ -9,9 +9,9 @@ const BottomBar = () => {
     
   return (
     <BottomNavigation showLabels value={pathname} onChange={(event, newValue) => console.log(newValue)}> 
-        <BottomNavigationAction LinkComponent={Link} to={"/"} label="Home" value={"/"} icon={<Map color='secondary' />} />
-        <BottomNavigationAction LinkComponent={Link} to={"/friends"} label="Friends" value={"/friends"} icon={<Map color='secondary' />} />
-        <BottomNavigationAction LinkComponent={Link} to={"/groups"} label="Groups" value={"/groups"} icon={<Map color='secondary' />} />
+        <BottomNavigationAction LinkComponent={Link} to={"/"} label="Home" value={"/"} icon={<Map />} />
+        <BottomNavigationAction LinkComponent={Link} to={"/friends"} label="Friends" value={"/friends"} icon={<Map />} />
+        <BottomNavigationAction LinkComponent={Link} to={"/groups"} label="Groups" value={"/groups"} icon={<Map />} />
     </BottomNavigation>
   )
 }
