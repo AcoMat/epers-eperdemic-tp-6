@@ -6,59 +6,31 @@ import Attribution from "ol/control/Attribution";
 import {TileJSON} from "ol/source";
 import { Tile } from "ol/layer";
 import { defaults } from "ol/control/defaults";
-import Feature from 'ol/Feature.js';
-import { Point } from "ol/geom";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
+import mapLocationToPoints from '../../utils/mapLocationToPoints'
+import mapDistrictToPoints from '../../utils/mapDistrictToPoints'
+import mapUserToPoint from '../../utils/mapUserToPoint'
 
 const arePropsEquals = (oldProps, newProps) => {
   return oldProps.userLocation.longitude === newProps.userLocation.longitude
           && oldProps.userLocation.latitude === newProps.userLocation.latitude
           && oldProps.onRadiusChange === newProps.onRadiusChange
           && oldProps.onLocationChanged === newProps.onLocationChanged
+          && oldProps.locations === newProps.location
+          && oldProps.districts === newProps.district
 }
 
-const geojsonObject = {
-  type: "FeatureCollection",
-  crs: {
-    type: "name",
-    properties: {
-      name: "EPSG:3857",
-    },
-  },
-  features: [
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [0, 0],
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [
-          [
-            [-5e6, -1e6],
-            [-3e6, -1e6],
-            [-4e6, 1e6],
-            [-5e6, -1e6],
-          ],
-        ],
-      },
-    },
-  ],
-};
-
-const MapComponent = memo(({ userLocation, onRadiusChange, onLocationChanged }) => {
+const MapComponent = memo(({ locations, districts, userLocation, onRadiusChange, onLocationChanged }) => {
   const mapRef = useRef(null);
   const goCenter = useRef(null)
+  const reloadFeatures = useRef(null)
+  const goTo = useRef(null)
   const [center, setCenter] = useState(userLocation)
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      onLocationChanged(center)
+      onLocationChanged({latitude: center[1] || 0, longitude: center[0] || 0})
     }, 500)
     return () => { clearTimeout(timeout) }
   }, [center, onLocationChanged])
@@ -76,21 +48,16 @@ const MapComponent = memo(({ userLocation, onRadiusChange, onLocationChanged }) 
     onRadiusChange(metersPerPixel * 10)
   }, [onRadiusChange])
 
-  const followUser = () => {
-
-  }
-
   useEffect(() => {
 
-    const iconFeature = new Feature({
-      geometry: new Point(fromLonLat([userLocation.longitude, userLocation.latitude])),
-      name: 'User',
-      population: 4000,
-      rainfall: 500,
-    });
+    console.log("rendered again")
+
+    const userPoint = mapUserToPoint(userLocation)
+    const locationPoints = mapLocationToPoints(locations)
+    const districtPoints = mapDistrictToPoints(districts)
 
     const vectorSource = new VectorSource({
-      features: [iconFeature],
+      features: [userPoint, ...locationPoints, ...districtPoints],
     });
 
     const vectorLayer = new VectorLayer({
@@ -127,8 +94,12 @@ const MapComponent = memo(({ userLocation, onRadiusChange, onLocationChanged }) 
 
     map.getView().on("change:resolution", (event) => {measureDistance(map)})
     map.getView().on("change:center", (event) => {changeCentralPosition(map)})
-    goCenter.current = () => { 
-      map.getView().setCenter(fromLonLat([userLocation.longitude, userLocation.latitude])) 
+    goCenter.current = ({longitude, latitude}) => { 
+      map.getView().setCenter(fromLonLat([longitude, latitude])) 
+    }
+    reloadFeatures.current = (features) => {
+      vectorLayer.getSource().clear()
+      vectorLayer.getSource().addFeatures(features)
     }
 
     measureDistance(map)
@@ -138,8 +109,23 @@ const MapComponent = memo(({ userLocation, onRadiusChange, onLocationChanged }) 
       map.getView().on("change:center", null)
       map.setTarget(null)
       goCenter.current = null
+      goTo.current = null
+      reloadFeatures.current = null
     }
-  }, [userLocation, measureDistance, changeCentralPosition])
+  }, [measureDistance, changeCentralPosition])
+
+  useEffect(() => { 
+    const features = [
+      mapUserToPoint(userLocation),
+      ...mapLocationToPoints(locations),
+      ...mapDistrictToPoints(districts)
+    ]
+    reloadFeatures.current(features)
+  }, [userLocation, districts, locations])
+
+  useEffect(() => {
+    goCenter.current(userLocation)
+  }, [userLocation])
 
   return (
     <div style={{ height: "80vh", width: "100%", position: "relative" }}>
