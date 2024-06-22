@@ -1,85 +1,144 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Map, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import 'ol/ol.css';
-import { OGCMapTile } from 'ol/source';
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import { Map, View } from "ol";
+import "ol/ol.css";
+import { fromLonLat, transform } from 'ol/proj'
+import Attribution from "ol/control/Attribution";
+import {TileJSON} from "ol/source";
+import { Tile } from "ol/layer";
+import { defaults } from "ol/control/defaults";
+import VectorSource from "ol/source/Vector";
+import VectorLayer from "ol/layer/Vector";
+import mapLocationToPoints from '../../utils/mapLocationToPoints'
+import mapDistrictToPoints from '../../utils/mapDistrictToPoints'
+import mapUserToPoint from '../../utils/mapUserToPoint'
 
-import VectorSource from 'ol/source/Vector';
-import GeoJSON from 'ol/format/GeoJSON.js';
-import VectorLayer from 'ol/layer/Vector';
+const arePropsEquals = (oldProps, newProps) => {
+  return oldProps.userLocation.longitude === newProps.userLocation.longitude
+          && oldProps.userLocation.latitude === newProps.userLocation.latitude
+          && oldProps.onRadiusChange === newProps.onRadiusChange
+          && oldProps.onLocationChanged === newProps.onLocationChanged
+          && oldProps.locations === newProps.location
+          && oldProps.districts === newProps.district
+}
 
-function MapComponent() {
-    const mapRef = useRef(null);
+const MapComponent = memo(({ locations, districts, userLocation, onRadiusChange, onLocationChanged }) => {
+  const mapRef = useRef(null);
+  const goCenter = useRef(null)
+  const reloadFeatures = useRef(null)
+  const goTo = useRef(null)
+  const [center, setCenter] = useState(userLocation)
+  const [radius, setRadius] = useState(0)
 
-    const osmLayer = new TileLayer({
-        source: new OGCMapTile({
-            url: 'https://maps.gnosis.earth/ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad',
-          }),
-    })
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onLocationChanged({latitude: center[1] || 0, longitude: center[0] || 0})
+    }, 500)
+    return () => { clearTimeout(timeout) }
+  }, [center, onLocationChanged])
 
-    useEffect(() => {    
-    const mapObject = new Map({
-        target: mapRef.current,
-        layers: [osmLayer, vectorLayer],
-        view: new View({
-            center: [0, 0],
-            zoom: 0,
-          }),
-      });
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onRadiusChange(radius)
+    }, 500)
+    return () => { clearTimeout(timeout) }
+  }, [radius, onRadiusChange])
 
-      return () => {
-        mapObject.setTarget(null);
-      };
-    }, []);
+  const changeCentralPosition = useCallback((map) => {
+    const center = map.getView().getCenter()
+    const latLonCoord = transform(center, 'EPSG:3857', 'EPSG:4326')
+    setCenter(latLonCoord)
+  }, [])
 
-    //
+  const measureDistance = useCallback((map) => {
+    const view = map.getView()
+    const currentZoomLevel = view.getZoom();
+    const metersPerPixel = 6371000 / Math.pow(2, currentZoomLevel); 
+    setRadius(metersPerPixel * 10)
+  }, [])
 
-    const geojsonObject = {
-      'type': 'FeatureCollection',
-      'crs': {
-        'type': 'name',
-        'properties': {
-          'name': 'EPSG:3857',
-        },
-      },
-      'features': [
-        {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [0, 0],
-          },
-        },
-        {
-          'type': 'Feature',
-          'geometry': {
-            'type': 'Polygon',
-            'coordinates': [
-              [
-                [-5e6, -1e6],
-                [-3e6, -1e6],
-                [-4e6, 1e6],
-                [-5e6, -1e6],
-              ],
-            ],
-          },
-        },
-      ]
-    };
+  useEffect(() => {
+
+    const userPoint = mapUserToPoint(userLocation)
+    const locationPoints = mapLocationToPoints(locations)
+    const districtPoints = mapDistrictToPoints(districts)
 
     const vectorSource = new VectorSource({
-      features: new GeoJSON().readFeatures(geojsonObject),
+      features: [userPoint, ...locationPoints, ...districtPoints],
     });
 
     const vectorLayer = new VectorLayer({
-      source: vectorSource
+      source: vectorSource,
     });
 
-    //
+    const attribution = new Attribution({
+      collapsible: false,
+    });
 
-    return (
-        <div style={{height:'80vh',width:'100%'}} ref={mapRef} id="map" />
-      );
-}
+    const source = new TileJSON({
+      url: `https://api.maptiler.com/maps/streets-v2/tiles.json?key=LQcHgRB6jDrmpJaRaBFZ`, // source URL
+      tileSize: 512,
+      crossOrigin: 'anonymous'
+    });
+
+    const map = new Map({
+      layers: [
+        new Tile({
+          source: source
+        }),
+        vectorLayer
+      ],
+      controls: defaults({attribution: false}).extend([attribution]),
+      target: 'map',
+      view: new View({
+        minZoom: 15,
+        maxZoom: 20,
+        constrainResolution: true,
+        center: fromLonLat([userLocation.longitude, userLocation.latitude]), // starting position [lng, lat]
+        zoom: 18 // starting zoom
+      })
+    });
+
+    map.getView().on("change:resolution", (event) => {measureDistance(map)})
+    map.getView().on("change:center", (event) => {changeCentralPosition(map)})
+    goCenter.current = ({longitude, latitude}) => { 
+      map.getView().setCenter(fromLonLat([longitude, latitude])) 
+    }
+    reloadFeatures.current = (features) => {
+      vectorLayer.getSource().clear()
+      vectorLayer.getSource().addFeatures(features)
+    }
+
+    measureDistance(map)
+
+    return () => { 
+      map.getView().on("change:resolution", null)
+      map.getView().on("change:center", null)
+      map.setTarget(null)
+      goCenter.current = null
+      goTo.current = null
+      reloadFeatures.current = null
+    }
+  }, [measureDistance, changeCentralPosition])
+
+  useEffect(() => { 
+    const features = [
+      mapUserToPoint(userLocation),
+      ...mapLocationToPoints(locations),
+      ...mapDistrictToPoints(districts)
+    ]
+    reloadFeatures.current(features)
+  }, [userLocation, districts, locations])
+
+  useEffect(() => {
+    goCenter.current(userLocation)
+  }, [userLocation])
+
+  return (
+    <div style={{ height: "80vh", width: "100%", position: "relative" }}>
+      <div style={{ height: "100%", width: "100%" }} ref={mapRef} id="map" />
+      <button style={{position: "absolute", bottom: 0, left: 0}} onClick={goCenter.current}>Follow user</button>
+    </div>
+  );
+}, arePropsEquals);
 
 export default MapComponent;
