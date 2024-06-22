@@ -11,7 +11,6 @@ window.getComputedStyle(document.documentElement).getPropertyValue('--color-font
 const AppTemplate = ({children}) => {
   return (
         <div className='app-template'>
-          <Header />
           <div className='app-template-body'>
             <main className='app-template-main-content'>
               {children}

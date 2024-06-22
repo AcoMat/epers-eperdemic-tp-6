@@ -172,10 +172,9 @@ const MapComponent = memo(
             marginBottom: "8px",
             marginLeft: "8px",
           }}
-          variant="extended"
+          variant="circular"
         >
           <AdjustRounded />
-          Follow user
         </Fab>
       </div>
     );
