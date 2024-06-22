@@ -27,6 +27,7 @@ const MapComponent = memo(({ locations, districts, userLocation, onRadiusChange,
   const reloadFeatures = useRef(null)
   const goTo = useRef(null)
   const [center, setCenter] = useState(userLocation)
+  const [radius, setRadius] = useState(0)
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -34,6 +35,13 @@ const MapComponent = memo(({ locations, districts, userLocation, onRadiusChange,
     }, 500)
     return () => { clearTimeout(timeout) }
   }, [center, onLocationChanged])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onRadiusChange(radius)
+    }, 500)
+    return () => { clearTimeout(timeout) }
+  }, [radius, onRadiusChange])
 
   const changeCentralPosition = useCallback((map) => {
     const center = map.getView().getCenter()
@@ -45,12 +53,10 @@ const MapComponent = memo(({ locations, districts, userLocation, onRadiusChange,
     const view = map.getView()
     const currentZoomLevel = view.getZoom();
     const metersPerPixel = 6371000 / Math.pow(2, currentZoomLevel); 
-    onRadiusChange(metersPerPixel * 10)
-  }, [onRadiusChange])
+    setRadius(metersPerPixel * 10)
+  }, [])
 
   useEffect(() => {
-
-    console.log("rendered again")
 
     const userPoint = mapUserToPoint(userLocation)
     const locationPoints = mapLocationToPoints(locations)

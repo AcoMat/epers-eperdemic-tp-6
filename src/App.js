@@ -13,6 +13,8 @@ function App() {
   const [mapItems, setMapItems] = useState({districts: [], locations: []})
   const {locations, districts} = mapItems
 
+  console.log(radiusInMeters)
+
   useEffect(() => {
     fetchData();
   }, []);
