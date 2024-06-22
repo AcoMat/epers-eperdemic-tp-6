@@ -1,0 +1,21 @@
+.app-template {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+    position: relative;
+}
+
+.app-template-main-content {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.app-template-body {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}

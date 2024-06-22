@@ -134,7 +134,7 @@ const MapComponent = memo(({ locations, districts, userLocation, onRadiusChange,
   }, [userLocation])
 
   return (
-    <div style={{ height: "80vh", width: "100%", position: "relative" }}>
+    <div style={{ height: "100%", width: "100%", position: "relative" }}>
       <div style={{ height: "100%", width: "100%" }} ref={mapRef} id="map" />
       <button style={{position: "absolute", bottom: 0, left: 0}} onClick={goCenter.current}>Follow user</button>
     </div>
