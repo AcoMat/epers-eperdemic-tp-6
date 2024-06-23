@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { auth, provider, dbFs, dbRt } from "../configs/firebase";
+import { auth, provider, databaseRealtime } from "../configs/firebase";
 import { signInWithPopup } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { createVector, getVector } from '../api/api';
-import { ref, set } from 'firebase/database';
+import { onDisconnect, ref, set, update } from 'firebase/database';
 
 const FriendPage = () => {
   const [user] = useAuthState(auth);
@@ -15,7 +14,7 @@ const FriendPage = () => {
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
-      console.error("Error signing in with Google:", error);
+      console.error("Error al autenticar con google", error);
     }
   };
 
@@ -31,7 +30,7 @@ const FriendPage = () => {
 
   const recuperarVector = async () => {
     try {
-      const vector = await getVector({ vectorId: 1 })
+      const vector = await getVector({ vectorId: 1 }) //VECTOR HARDCODEADO
       console.log(vector)
       setUserVector(vector)
 
@@ -45,11 +44,15 @@ const FriendPage = () => {
       };
       
       setVectorToUser(usuarioVector)
-      console.log(usuarioVector)
 
-      set(ref(dbRt, 'users/usuariodbrt'), usuarioVector)
+      const uid = user.uid;
+      const docUserRef = ref(databaseRealtime, 'users/' + uid)
+      set(docUserRef, usuarioVector)
+      const docUserStatusRef = ref(databaseRealtime, 'status/' + uid)
 
-      // setDoc(doc(dbFs, "users", "usuariodbfs"), usuarioVector)
+      set(docUserStatusRef, { state: 'online' })
+      onDisconnect(docUserStatusRef, { state: 'offline' })
+
     } catch (e) {
       console.log(e)
     }
@@ -62,7 +65,14 @@ const FriendPage = () => {
   }, [user])
 
   const handleLogout = () => {
-    auth.signOut();
+    auth.signOut().then(() => {
+      if (user) {
+      const docUserStatusRef = ref(databaseRealtime, 'status/' + user.uid)
+      update(docUserStatusRef, { state: 'offline' })
+      }
+    }).catch((error) => {
+      console.error('Error al hacer logout:', error);
+    });
   };
 
   return (
