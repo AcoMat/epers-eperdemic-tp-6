@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react'
-import { arrayRemove, arrayUnion, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { useContext, useEffect, useState } from 'react'
+import { arrayRemove, arrayUnion, collection, doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import { AuthContext } from '../auth/AuthContextProvider';
 import { databaseFirestore } from '../configs/firebase';
 
@@ -10,14 +10,14 @@ const useGroups = () => {
 
     const onCreateGroup = async (nameGroup) => {
         if(!user) return;
-        const groupToCreate = doc(databaseFirestore, "group", nameGroup)
+        const groupToCreate = doc(databaseFirestore, "groups", nameGroup)
         await setDoc(groupToCreate, {
             name: nameGroup,
-            lider: user.displayName,
+            lider: user,
             members: [user]
         })
         if (user.group) {
-            const groupToDeleteMember = doc(databaseFirestore, "group", user.group)
+            const groupToDeleteMember = doc(databaseFirestore, "groups", user.group)
             await updateDoc(groupToDeleteMember, {
                 members: arrayRemove(user)
 
@@ -29,26 +29,46 @@ const useGroups = () => {
             })
     }
 
-    const onAddMemberToGroup = async (member, nameGroup) => {
-        const groupToCreate = doc(databaseFirestore, "group", nameGroup)
+    const onAddMemberToGroup = async (nameGroup) => {
+        if(!user) return;
+        const groupToCreate = doc(databaseFirestore, "groups", nameGroup)
         await updateDoc(groupToCreate, {
-            members: arrayUnion(member)
+            members: arrayUnion(user)
         })
-        if (member.group) {
-            const groupToDeleteMember = doc(databaseFirestore, "group", member.group)
+        if (user.group) {
+            const groupToDeleteMember = doc(databaseFirestore, "groups", user.group)
             await updateDoc(groupToDeleteMember, {
-                members: arrayRemove(member)
+                members: arrayRemove(user)
 
             })
         }
-        const userRef = doc(databaseFirestore, "users", member.uid)
-        await updateDoc(userRef, {
+        const memberRef = doc(databaseFirestore, "users", user.uid)
+        await updateDoc(memberRef, {
             group: nameGroup
         })
     }
 
+    
+    const getGroups = async () => {
+        const unsubscribe = onSnapshot(collection(databaseFirestore, "groups"), (snapshot) => {
+            const groups = []
+            snapshot.forEach((doc) => {
+                groups.push(doc.data());
+            });
+            setGroups(groups)
+        });
+
+        return unsubscribe
+    }
+
+    useEffect(() => {
+        const unsubscribe = getGroups()
+
+        return () => unsubscribe()
+    }, [user])
+
     return (
-        { onCreateGroup, onAddMemberToGroup }
+        { onCreateGroup, onAddMemberToGroup, groups }
     )
 }
 

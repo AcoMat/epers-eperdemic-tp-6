@@ -6,7 +6,7 @@ import useGroups from "../hooks/useGroups";
 
 const GroupPage = () => {
   const { user, signIn, logout } = useContext(AuthContext);
-  const { onAddMemberToGroup, onCreateGroup } = useGroups();
+  const { onAddMemberToGroup, onCreateGroup, groups } = useGroups();
 
   if (!user) {
     return <button onClick={signIn}>login</button>;
@@ -15,6 +15,9 @@ const GroupPage = () => {
   return (
     <Background style={backgroundStyle}>
       <GroupList
+        groups={groups}
+        onAddMemberToGroup={onAddMemberToGroup}
+        user={user}
       />
     </Background>
   );
