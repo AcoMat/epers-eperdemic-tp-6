@@ -14,4 +14,17 @@ const getMapItems = async (location, radius) => {
     return response.data
 }
 
-export { getMapItems }
+const createVector = async ({type, ubicacionId}) => {
+    const body = {
+        type,
+        ubicacionId
+    }
+    const response = await axios.post(url + "/vector", body)
+    return response.data
+}
+
+const getVector = async ({vectorId}) => {
+    const response = await axios.get(url + `/vector/${vectorId}`)
+    return response.data
+}
+export { getMapItems, createVector, getVector }
