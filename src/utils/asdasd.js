@@ -14,6 +14,50 @@ const themee = createTheme({
         }
     },
     components: {
+        MuiOutlinedInput: {
+            styleOverrides: {
+                notchedOutline: {
+                    borderColor: "white"
+                },
+                colorSecondary: {
+                    borderColor: "white"
+                },
+                focused: {
+                    borderColor: "white"
+                }
+            }
+        },
+        MuiListItem: {
+            styleOverrides: {
+                secondaryAction: {
+                    backgroundColor: "white"
+                }
+            }
+        },
+        MuiListItemText: {
+            styleOverrides: {
+                secondary: {
+                    color: "red",
+                    backgroundColor: "white"
+                },
+
+            }
+        },
+        MuiListItemButton: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: "red"
+                },
+                disabled: true
+            }
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: ({theme}) => ({
+                    backgroundColor: theme.palette.background.card
+                })
+            }
+        },
         MuiBottomNavigationAction: {
             styleOverrides: {
                 label: ({theme}) => ({

@@ -8,10 +8,43 @@ const getDesignToken = (mode) => ({
             main: '#f3f0e0'
         },
         background: {
-            default: mode === 'light' ? '#eddded' : '#423741'
+            card: mode === 'light' ? '#eddded' : '#423741',
+            default: mode === 'light' ? '#f3f0f3' : '#1c181c',
         }
     },
     components: {
+        MuiOutlinedInput: {
+            styleOverrides: {
+                notchedOutline: ({theme}) => ({
+                    borderColor: mode === "dark" ? theme.palette.secondary.main : theme.palette.primary.main,
+                }),
+                input: ({theme}) => ({
+                    color: mode === "dark" ? theme.palette.secondary.main : theme.palette.primary.main
+                }),
+                root: ({theme}) => ({
+                    "&:hover > .MuiOutlinedInput-notchedOutline" : {
+                        borderColor : mode === "dark" ? theme.palette.secondary.main : theme.palette.primary.main
+                    },
+                    '& .MuiSvgIcon-root': {
+                        fill: mode === "dark" ? theme.palette.secondary.main : theme.palette.primary.main
+                    }
+                })
+            }
+        },
+        MuiListItemText: {
+            styleOverrides: {
+                root: ({theme}) => ({
+                    color: mode === 'dark' ? theme.palette.secondary.main : "black"
+                }),
+            }
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: ({theme}) => ({
+                    backgroundColor: theme.palette.background.card
+                })
+            }
+        },
         MuiBottomNavigationAction: {
             styleOverrides: {
                 label: ({theme}) => ({
@@ -41,14 +74,7 @@ const getDesignToken = (mode) => ({
         MuiBottomNavigation: {
             styleOverrides: {
                 root: ({theme}) => ({
-                    position: "absolute",
-                    bottom: "16px",
-                    borderRadius: 16,
-                    maxWidth: "40%",
-                    margin: "0 auto",
-                    left: 0,
-                    right: 0,
-                    background: theme.palette.background.default
+                    background: theme.palette.background.card
                 })}
             }
         }

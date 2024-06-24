@@ -7,28 +7,28 @@ import { useMemo, useState } from 'react';
 import getDesignToken from './utils/theme';
 import { createTheme } from '@mui/material';
 import AuthContextProvider from './auth/AuthContextProvider';
+import ColorModeContext from './theme/ColorModeContext'
 
 function App() {
   const [mode, setMode] = useState('dark')
-  const colorMode = useMemo(() => ({
-    toggleColorMode: () => {
-      setMode((prevMode) => prevMode === 'light' ? 'dark': 'light')
-    }
-  }))
+  const toggleMode = () => {
+    setMode((prevMode) => prevMode === 'light' ? 'dark': 'light')
+  } 
 
   const theme = useMemo(() => createTheme(getDesignToken(mode)), [mode])
 
   return (
     <AuthContextProvider>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-            <AppTemplate>
-              <AppRoutes />
-            </AppTemplate>
-        </ThemeProvider>
-      </BrowserRouter>
+      <ColorModeContext.Provider value={{mode, toggleMode}}>
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+              <AppTemplate>
+                <AppRoutes />
+              </AppTemplate>
+          </ThemeProvider>
+        </BrowserRouter>
+      </ColorModeContext.Provider>
     </AuthContextProvider>
-    
   );
 }
 
