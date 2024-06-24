@@ -4,8 +4,10 @@ import { signInWithPopup } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { createVector, getVector } from '../api/api';
 import { onDisconnect, ref, set, update } from 'firebase/database';
+import useFriends from '../hooks/useFriends';
 
 const FriendPage = () => {
+  //const {friends} = useFriends()
   const [user] = useAuthState(auth);
   const [userVector, setUserVector] = useState()
   const [vectorToUser, setVectorToUser] = useState()
@@ -30,7 +32,7 @@ const FriendPage = () => {
 
   const recuperarVector = async () => {
     try {
-      const vector = await getVector({ vectorId: 1 }) //VECTOR HARDCODEADO
+      const vector = await getVector({ vectorId: userVector.id}) 
       console.log(vector)
       setUserVector(vector)
 
@@ -78,6 +80,7 @@ const FriendPage = () => {
   return (
     <>
       <h1>FriendPage</h1>
+      <button onClick={crearVector}> crear vector</button>
       {user ? (
         <>
           <h1>Hello, {user?.displayName}</h1>
