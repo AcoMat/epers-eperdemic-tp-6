@@ -8,10 +8,6 @@ const estaInfectadoConCache = async (vectorId) => {
     const reload = noLoTengo || noHaceFalta(vectorRecuperado)
     if(reload) {
         const estaInfectado = await isInfectado(vectorId)
-<<<<<<< Updated upstream
-        console.log("refreshing", estaInfectado)
-=======
->>>>>>> Stashed changes
         vectoresVistos[vectorId] = {
             estaInfectado: estaInfectado,
             lastRefresh: Date.now()
