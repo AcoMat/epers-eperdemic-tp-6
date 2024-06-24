@@ -49,7 +49,7 @@ const useGroups = () => {
     }
 
     
-    const getGroups = async () => {
+    const getGroups = () => {
         const unsubscribe = onSnapshot(collection(databaseFirestore, "groups"), (snapshot) => {
             const groups = []
             snapshot.forEach((doc) => {
@@ -64,7 +64,7 @@ const useGroups = () => {
     useEffect(() => {
         const unsubscribe = getGroups()
 
-        return () => unsubscribe()
+        return unsubscribe()
     }, [user])
 
     return (
