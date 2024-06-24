@@ -7,13 +7,6 @@ const UserSearched = ({user, friendsIds, onFriendAddPress, userUid}) => {
   const isUser = user.uid === userUid
   const shouldShowAddButton = !isUser && !isFriend
 
-<<<<<<< Updated upstream
-  useEffect(() => {
-    console.log(friendsIds)
-  }, [friendsIds])
-
-=======
->>>>>>> Stashed changes
   return (
     <ListItem
         secondaryAction={
