@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../../auth/AuthContextProvider";
-import { Avatar, Button, Card, IconButton } from "@mui/material";
+import { Button, Card, IconButton } from "@mui/material";
 import "./UserBar.css";
 import ColorModeContext from "../../theme/ColorModeContext";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
+import AvatarWithStatus from "../AvatarWithStatus/AvatarWithStatus";
 
 const UserBar = () => {
   const { user, logout, signIn } = useContext(AuthContext);
@@ -23,7 +24,7 @@ const UserBar = () => {
             <Button variant="contained" onClick={logout}>
             Cerrar sesion
             </Button>
-            <Avatar src={user?.photoURL} />
+            <AvatarWithStatus user={user} />
         </>
       ) : (
         <>

@@ -48,7 +48,13 @@ const AuthContextProvider = ({ children }) => {
     console.log(user);
     if (!fetchedUser.exists()) {
       const vectorId = await createVector({ type: "HUMANO", ubicacionId: 1 });
-      await setDoc(docRef, { vectorId: vectorId, friendsIds: [], photoUrl: user.photoURL, displayName: user.displayName});
+      await setDoc(docRef, {
+        vectorId: vectorId,
+        friendsIds: [],
+        photoUrl: user.photoURL,
+        displayName: user.displayName,
+        uid: user.uid 
+      });
     }
   };
 

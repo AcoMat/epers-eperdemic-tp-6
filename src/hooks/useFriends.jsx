@@ -2,9 +2,10 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { AuthContext } from '../auth/AuthContextProvider';
 import { databaseFirestore } from '../configs/firebase';
+import { estaInfectadoConCache } from '../auth/estaInfectadoConCache';
 
 const useFriends = () => {
-    const { user, logout } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
     const unsuscribeUpdateFriendCallbacks = useRef([])
     const [friends, setFriends] = useState([])
     const [loading, setLoading] = useState(true)
@@ -31,6 +32,15 @@ const useFriends = () => {
         })
     }
 
+    const onAddFriend = async (userToAdd) => {
+        if(!user) return;
+        const userToAddRef = doc(databaseFirestore, "users", userToAdd.uid)
+        const userRef = doc(databaseFirestore, "users", user.uid)
+        await updateDoc(userRef, {
+            friendsIds: arrayUnion(userToAddRef)
+        })
+    }
+
     useEffect(() => {
         if(!user) return;
         deleteNotLongerFriends(user.friendsIds)
@@ -38,16 +48,26 @@ const useFriends = () => {
             return onSnapshot(friendReference, (doc) => {
                 const path = friendReference._key.path.segments
                 const id = path[path.length - 1]
-                console.log(doc.data())
-                changeUser({...doc.data(), uid: id,})
+                changeUser({...doc.data(), uid: id, estaInfectado: null})
+                setEstaInfectado(doc.data().vectorId, id)
             })
         })
         unsuscribeUpdateFriendCallbacks.current = callbacks
         return () => { unsuscribeUpdateFriendCallbacks.current.forEach(callback => callback()) } 
     }, [user])
 
+    const setEstaInfectado = async (vectorId, friendUid) => {
+        const estaInfectado = await estaInfectadoConCache(vectorId)
+        setFriends(friends => {
+            const mappedFriends = friends.map(friend => {
+                return friend.uid === friendUid ? {...friend, estaInfectado: estaInfectado} : friend
+            })
+            return mappedFriends
+        })
+    }
+
     return (
-        { friends, onRemoveFriend, loading }
+        { friends, onRemoveFriend, loading, onAddFriend }
     )
 }
 

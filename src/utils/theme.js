@@ -13,6 +13,13 @@ const getDesignToken = (mode) => ({
         }
     },
     components: {
+        MuiDivider: {
+            styleOverrides: {
+                root: ({theme}) => ({
+                    backgroundColor: mode === "dark" ? theme.palette.secondary.light : theme.palette.primary.light
+                })
+            }
+        },
         MuiOutlinedInput: {
             styleOverrides: {
                 notchedOutline: ({theme}) => ({
@@ -27,7 +34,8 @@ const getDesignToken = (mode) => ({
                     },
                     '& .MuiSvgIcon-root': {
                         fill: mode === "dark" ? theme.palette.secondary.main : theme.palette.primary.main
-                    }
+                    },
+                    backgroundColor: theme.palette.background.default
                 })
             }
         },
@@ -36,6 +44,15 @@ const getDesignToken = (mode) => ({
                 root: ({theme}) => ({
                     color: mode === 'dark' ? theme.palette.secondary.main : "black"
                 }),
+            }
+        },
+        MuiListItem: {
+            styleOverrides: {
+                root: ({theme}) => ({
+                    '& .MuiListItemSecondaryAction-root .MuiSvgIcon-root': {
+                        fill: mode === "dark" ? theme.palette.secondary.main : theme.palette.primary.main
+                    }
+                })
             }
         },
         MuiCard: {

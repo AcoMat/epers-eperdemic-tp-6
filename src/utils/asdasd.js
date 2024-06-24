@@ -14,6 +14,13 @@ const themee = createTheme({
         }
     },
     components: {
+        MuiDivider: {
+            styleOverrides: {
+                root: ({theme}) => ({
+                    backgroundColor: mode === "dark" ? theme.palette.secondary.light : theme.palette.primary.light
+                })
+            }
+        },
         MuiOutlinedInput: {
             styleOverrides: {
                 notchedOutline: {
@@ -24,12 +31,20 @@ const themee = createTheme({
                 },
                 focused: {
                     borderColor: "white"
+                },
+                adornedEnd: {
+                    backgroundColor: "red"
                 }
             }
         },
         MuiListItem: {
             styleOverrides: {
                 secondaryAction: {
+                    root: {
+                        backgroundColor: "red"
+                    }
+                },
+                button: {
                     backgroundColor: "white"
                 }
             }

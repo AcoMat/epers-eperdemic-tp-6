@@ -1,40 +1,30 @@
 import React, { useContext } from "react";
 import "./Friend.css";
 import {
-  Avatar,
   IconButton,
   ListItem,
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
 import { PersonRemoveOutlined } from "@mui/icons-material";
-import ColorModeContext from "../../theme/ColorModeContext";
+import AvatarWithStatus from "../AvatarWithStatus/AvatarWithStatus";
 
 const Friend = ({ user, onRemove }) => {
-  const { mode } = useContext(ColorModeContext);
-
   return (
     <ListItem
       style={{ ...cardStyle }}
       secondaryAction={
         <IconButton onClick={() => onRemove(user)}>
-          <PersonRemoveOutlined
-            color={mode === "dark" ? "secondary" : "primary"}
-          />
+          <PersonRemoveOutlined />
         </IconButton>
       }
     >
       <ListItemAvatar>
-        <Avatar style={avatarImageStyle} src={user.photoUrl} />
+        <AvatarWithStatus user={user} avatarStyle={{height: 56, width: 56}} />
       </ListItemAvatar>
       <ListItemText primary={user.displayName} />
     </ListItem>
   );
-};
-
-const avatarImageStyle = {
-  height: 56,
-  width: 56,
 };
 
 const cardStyle = {

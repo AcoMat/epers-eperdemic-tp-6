@@ -27,4 +27,10 @@ const getVector = async ({vectorId}) => {
     const response = await axios.get(url + `/vector/${vectorId}`)
     return response.data
 }
-export { getMapItems, createVector, getVector }
+
+const isInfectado = async (vectorId) => {
+    const response = await axios.get(url + `/vector/${vectorId}/estaInfectado`)
+    return response.data
+}
+
+export { getMapItems, createVector, getVector, isInfectado }
