@@ -41,3 +41,6 @@ Firebase quiere visualizar los movimientos de sus soldados y distintos datos rel
 - Agregar a otros miembros de Firebase a tu red de contactos para ver sus ubicaciones
 - Unirse a un **grupo** específico. Deberá mostrarse un ranking de los grupos con más integrantes para conocer quiénes lograron más adhesiones a la causa
 
+<p align="center">
+  <img src="imagenes/mapa.png" />
+</p>
