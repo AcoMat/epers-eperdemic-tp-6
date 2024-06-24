@@ -1,75 +1,34 @@
-import { useCallback, useEffect, useState } from 'react';
 import './App.css';
-import Header from './components/Header/Header';
-import MapComponent from './components/MapComponents/MapComponent';
-import useLocation from './hooks/useLocation';
-import { getMapItems } from './api/api';
+import AppTemplate from './template/AppTemplate';
+import AppRoutes from './routes/AppRoutes';
+import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider } from '@emotion/react';
+import { useMemo, useState } from 'react';
+import getDesignToken from './utils/theme';
+import { createTheme } from '@mui/material';
+import AuthContextProvider from './auth/AuthContextProvider';
+import ColorModeContext from './theme/ColorModeContext'
 
 function App() {
-  const [data, setData] = useState();
-  const { location } = useLocation()
-  const [radiusInMeters, setRadiusInMeters] = useState(0);
-  const [viewingLocationCenter, setViewingLocationCenter] = useState({longitude: 0, latitude: 0})
-  const [mapItems, setMapItems] = useState({districts: [], locations: []})
-  const {locations, districts} = mapItems
+  const [mode, setMode] = useState('dark')
+  const toggleMode = () => {
+    setMode((prevMode) => prevMode === 'light' ? 'dark': 'light')
+  } 
 
-  console.log(radiusInMeters)
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    
-  }, [radiusInMeters, viewingLocationCenter])
-
-  const optimizedSetRadiusInMeters = useCallback((radius) => {
-    setRadiusInMeters(radius)
-  }, [])
-
-  const optimizedLocationChanged = useCallback((newLocation) => {
-    setViewingLocationCenter(newLocation)
-  }, [])
-
-  useEffect(() => {
-    fetchMapItems()
-  }, [radiusInMeters, viewingLocationCenter])
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/patogeno/todosLosPatogenos')
-      const result = await response.json();
-      setData(result)
-      console.log(result)
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchMapItems = async () => {
-    try {
-      console.log(viewingLocationCenter, radiusInMeters)
-      const mapItems = await getMapItems(viewingLocationCenter, radiusInMeters * 3)
-      const locations = mapItems.map(district => district.ubicaciones).flat(1)
-      setMapItems({districts: mapItems, locations: locations})
-    } catch (error) {
-      console.log(error)
-     }
-  }
+  const theme = useMemo(() => createTheme(getDesignToken(mode)), [mode])
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <Header></Header>
-      </header>
-      <main>
-        <p>{location.latitude}</p>
-        <p>{location.longitude}</p>
-        <MapComponent districts={districts} locations={locations} onLocationChanged={optimizedLocationChanged} onRadiusChange={optimizedSetRadiusInMeters} userLocation ={location} />
-      </main>
-      <footer>
-      </footer>
-    </div>
+    <AuthContextProvider>
+      <ColorModeContext.Provider value={{mode, toggleMode}}>
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+              <AppTemplate>
+                <AppRoutes />
+              </AppTemplate>
+          </ThemeProvider>
+        </BrowserRouter>
+      </ColorModeContext.Provider>
+    </AuthContextProvider>
   );
 }
 

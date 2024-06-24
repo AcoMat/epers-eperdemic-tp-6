@@ -1,0 +1,17 @@
+.friend-page-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+    flex-grow: 1;
+    background-color: aqua;
+}
+
+.friend-page-container > :first-child {
+    flex-grow: 2;
+}
+
+.friend-page-container > :nth-child(2) {
+    flex-grow: 1;
+}

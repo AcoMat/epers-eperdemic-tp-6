@@ -1,0 +1,12 @@
+.user-bar-container {
+    position: absolute;
+    z-index: 1;
+    background-color: rgb(225, 222, 222);
+    top: 0;
+    padding: 16;
+    right: 0;
+}
+
+.user-bar-logout-container {
+    display: flex;
+}

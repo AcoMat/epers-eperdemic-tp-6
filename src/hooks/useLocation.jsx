@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import { useCallback, useEffect, useState } from "react";
 
 const useLocation = () => {
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
