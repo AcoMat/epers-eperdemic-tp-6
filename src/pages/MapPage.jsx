@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react'
 import MapComponent from '../components/MapComponents/MapComponent';
 import { getMapItems } from '../api/api';
 import useLocation from '../hooks/useLocation';
+import GeolocationDenied from '../pages/GeolocationDenied'
 
 const MapPage = () => {
     const [data, setData] = useState();
-    const { location } = useLocation()
+    const { location, isLocationEnabled } = useLocation();
     const [radiusInMeters, setRadiusInMeters] = useState(0);
     const [viewingLocationCenter, setViewingLocationCenter] = useState({longitude: 0, latitude: 0})
     const [mapItems, setMapItems] = useState({districts: [], locations: []})
@@ -16,8 +17,10 @@ const MapPage = () => {
     }, []);
   
     useEffect(() => {
-      
-    }, [radiusInMeters, viewingLocationCenter])
+      if (isLocationEnabled) {
+        fetchMapItems();
+      }
+    }, [isLocationEnabled, radiusInMeters, viewingLocationCenter])
   
     const optimizedSetRadiusInMeters = useCallback((radius) => {
       setRadiusInMeters(radius)
@@ -36,10 +39,6 @@ const MapPage = () => {
         const response = await fetch('http://localhost:8080/patogeno/todosLosPatogenos')
         const result = await response.json();
         setData(result)
-<<<<<<< Updated upstream
-        console.log(result)
-=======
->>>>>>> Stashed changes
       } catch (error) {
         console.error(error);
       }
@@ -47,10 +46,6 @@ const MapPage = () => {
   
     const fetchMapItems = async () => {
       try {
-<<<<<<< Updated upstream
-        console.log(viewingLocationCenter, radiusInMeters)
-=======
->>>>>>> Stashed changes
         const mapItems = await getMapItems(viewingLocationCenter, radiusInMeters * 3)
         const locations = mapItems.map(district => district.ubicaciones).flat(1)
         setMapItems({districts: mapItems, locations: locations})
@@ -59,8 +54,18 @@ const MapPage = () => {
        }
     }
 
-  return (
-    <MapComponent districts={districts} locations={locations} onLocationChanged={optimizedLocationChanged} onRadiusChange={optimizedSetRadiusInMeters} userLocation ={location} />
+    if (!isLocationEnabled) {
+      return <GeolocationDenied />;
+    }
+
+  return ( 
+    <MapComponent 
+      districts={districts} 
+      locations={locations} 
+      onLocationChanged={optimizedLocationChanged} 
+      onRadiusChange={optimizedSetRadiusInMeters} 
+      userLocation ={location} 
+    />
   )
 }
 
