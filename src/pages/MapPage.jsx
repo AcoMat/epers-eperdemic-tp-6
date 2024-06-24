@@ -3,10 +3,11 @@ import MapComponent from '../components/MapComponents/MapComponent';
 import { getMapItems } from '../api/api';
 import useLocation from '../hooks/useLocation';
 import GeolocationDenied from '../pages/GeolocationDenied'
+import Loading from '../components/Loading/Loading';
 
 const MapPage = () => {
     const [data, setData] = useState();
-    const { location, isLocationEnabled } = useLocation();
+    const { location, isLocationEnabled, isLoading } = useLocation();
     const [radiusInMeters, setRadiusInMeters] = useState(0);
     const [viewingLocationCenter, setViewingLocationCenter] = useState({longitude: 0, latitude: 0})
     const [mapItems, setMapItems] = useState({districts: [], locations: []})
@@ -56,6 +57,10 @@ const MapPage = () => {
 
     if (!isLocationEnabled) {
       return <GeolocationDenied />;
+    }
+
+    if(isLoading) {
+      return <Loading />
     }
 
   return ( 
