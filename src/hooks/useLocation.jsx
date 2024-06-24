@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 const useLocation = () => {
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
   const [location, setLocation] = useState({ latitude: 0.0, longitude: 0.0 });
+  const [isLoading, setisLoading] = useState(true) 
 
   useEffect(() => {
     navigator.permissions
@@ -12,12 +13,11 @@ const useLocation = () => {
       });
   }, []);
 
-  console.log(hasLocationPermission)
-
   const setActualLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(({ coords }) => {
       if(coords.latitude === location.latitude && coords.longitude === location.longitude) return;
       setLocation({ latitude: coords.latitude, longitude: coords.longitude });
+      setisLoading(false)
     });
   }, [setLocation, location])
 
@@ -33,7 +33,7 @@ const useLocation = () => {
     };
   }, [hasLocationPermission, setActualLocation]);
 
-  return { location, isLocationEnabled: hasLocationPermission};
+  return { location, isLocationEnabled: hasLocationPermission, isLoading};
 };
 
 export default useLocation;
