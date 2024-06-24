@@ -155,6 +155,10 @@ const MapComponent = memo(
     }, [userLocation, districts, locations]);
 
     useEffect(() => {
+<<<<<<< Updated upstream
+=======
+      console.log("go user", userLocation)
+>>>>>>> Stashed changes
       goCenter.current(userLocation);
     }, [userLocation]);
 

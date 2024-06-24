@@ -12,6 +12,8 @@ const useLocation = () => {
       });
   }, []);
 
+  console.log(hasLocationPermission)
+
   const setActualLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(({ coords }) => {
       if(coords.latitude === location.latitude && coords.longitude === location.longitude) return;
