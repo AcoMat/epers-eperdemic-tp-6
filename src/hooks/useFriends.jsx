@@ -1,29 +1,37 @@
-import React, { useEffect, useState } from 'react'
-import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, databaseFirestore } from '../configs/firebase';
+import { useContext, useEffect, useRef, useState } from 'react'
+import { onSnapshot } from 'firebase/firestore';
+import { AuthContext } from '../auth/AuthContextProvider';
 
 const useFriends = () => {
-    const [user, loading, error] = useAuthState(auth);
-
+    const { user, logout } = useContext(AuthContext)
+    const unsuscribeUpdateFriendCallbacks = useRef([])
     const [friends, setFriends] = useState([])
 
+    const changeUser = (user) => {
+        if(!friends.includes(friend => friend.uid === user.uid)){
+            setFriends(friends => [...friends, user]);
+        } else {
+            setFriends(friends => friends.map((friend) => friend.uid === user.uid ? user : friend))
+        }
+    }
+
+    const deleteNotLongerFriends = (uids) => {
+        setFriends(friends => friends.filter((friend) => friend.uid in uids))
+    }
 
     useEffect(() => {
-        if(!user) {
-            return
-        }
-        console.log(user.user)
-        const userFriendsRef = collection(databaseFirestore, 'users', user.uid, 'friendsIds')
-        const mquery = query(collection(databaseFirestore, 'users'), where("uid", "in", userFriendsRef))
-        const unsubscribe = onSnapshot(mquery, (querySnapshot) => {
-            const friends = [];
-            querySnapshot.forEach((doc) => {
-                friends.push(doc.data());
-            });
-            setFriends(friends)
-        });
-        return () => { unsubscribe() }
+        console.log(user)
+        if(!user) return;
+        deleteNotLongerFriends(user.friendsIds)
+        const callbacks = user.friendsIds.map(friendReference => {
+            return onSnapshot(friendReference, (doc) => {
+                const path = friendReference._key.path.segments
+                const id = path[path.length - 1]
+                changeUser({...doc.data(), uid: id,})
+            })
+        })
+        unsuscribeUpdateFriendCallbacks.current = callbacks
+        return () => { unsuscribeUpdateFriendCallbacks.current.forEach(callback => callback()) } 
     }, [user])
 
     return (

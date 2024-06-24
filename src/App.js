@@ -6,6 +6,7 @@ import { ThemeProvider } from '@emotion/react';
 import { useMemo, useState } from 'react';
 import getDesignToken from './utils/theme';
 import { createTheme } from '@mui/material';
+import AuthContextProvider from './auth/AuthContextProvider';
 
 function App() {
   const [mode, setMode] = useState('dark')
@@ -18,13 +19,16 @@ function App() {
   const theme = useMemo(() => createTheme(getDesignToken(mode)), [mode])
 
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-          <AppTemplate>
-            <AppRoutes />
-          </AppTemplate>
-      </ThemeProvider>
-    </BrowserRouter>
+    <AuthContextProvider>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+            <AppTemplate>
+              <AppRoutes />
+            </AppTemplate>
+        </ThemeProvider>
+      </BrowserRouter>
+    </AuthContextProvider>
+    
   );
 }
 
