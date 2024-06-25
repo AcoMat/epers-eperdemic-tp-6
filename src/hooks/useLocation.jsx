@@ -1,9 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { AuthContext } from "../auth/AuthContextProvider";
 
 const useLocation = () => {
+  const { user, setUserLocation } = useContext(AuthContext)
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
   const [location, setLocation] = useState({ latitude: 0.0, longitude: 0.0 });
   const [isLoading, setisLoading] = useState(true) 
+
+  useEffect(() => {
+    if(isLoading || !user) return;
+    setUserLocation(location)
+  }, [isLoading, location, user])
 
   useEffect(() => {
     navigator.permissions

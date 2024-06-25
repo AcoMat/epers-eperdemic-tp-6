@@ -4,19 +4,19 @@ import { getMapItems } from '../api/api';
 import useLocation from '../hooks/useLocation';
 import GeolocationDenied from '../pages/GeolocationDenied'
 import Loading from '../components/Loading/Loading';
+import useFriends from '../hooks/useFriends'
 
 const MapPage = () => {
-    const [data, setData] = useState();
     const { location, isLocationEnabled, isLoading } = useLocation();
     const [radiusInMeters, setRadiusInMeters] = useState(0);
     const [viewingLocationCenter, setViewingLocationCenter] = useState({longitude: 0, latitude: 0})
     const [mapItems, setMapItems] = useState({districts: [], locations: []})
     const {locations, districts} = mapItems
-    
-    useEffect(() => {
-      fetchData();
-    }, []);
-  
+    const { friends } = useFriends()
+    const friendsWithLocation = friends.filter(friend => !!friend.location)
+    console.log(friends)
+    console.log(friendsWithLocation)
+
     useEffect(() => {
       if (isLocationEnabled) {
         fetchMapItems();
@@ -34,16 +34,6 @@ const MapPage = () => {
     useEffect(() => {
       fetchMapItems()
     }, [radiusInMeters, viewingLocationCenter])
-  
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/patogeno/todosLosPatogenos')
-        const result = await response.json();
-        setData(result)
-      } catch (error) {
-        console.error(error);
-      }
-    };
   
     const fetchMapItems = async () => {
       try {
@@ -69,7 +59,8 @@ const MapPage = () => {
       locations={locations} 
       onLocationChanged={optimizedLocationChanged} 
       onRadiusChange={optimizedSetRadiusInMeters} 
-      userLocation ={location} 
+      userLocation ={location}
+      friends={friendsWithLocation}
     />
   )
 }

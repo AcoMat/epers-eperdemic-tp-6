@@ -6,13 +6,13 @@ import { estaInfectadoConCache } from '../auth/estaInfectadoConCache';
 
 const useFriends = () => {
     const { user } = useContext(AuthContext)
-    const unsuscribeUpdateFriendCallbacks = useRef([])
     const [friends, setFriends] = useState([])
     const [loading, setLoading] = useState(true)
 
     const changeUser = (user) => {
         setLoading(false)
-        if(!friends.includes(friend => friend.uid === user.uid)){
+        console.log(user)
+        if(!friends.some(friend => friend.uid === user.uid)){
             setFriends(friends => [...friends, user]);
         } else {
             setFriends(friends => friends.map((friend) => friend.uid === user.uid ? user : friend))
@@ -52,8 +52,7 @@ const useFriends = () => {
                 setEstaInfectado(doc.data().vectorId, id)
             })
         })
-        unsuscribeUpdateFriendCallbacks.current = callbacks
-        return () => { unsuscribeUpdateFriendCallbacks.current.forEach(callback => callback()) } 
+        return () => { callbacks.forEach(callback => callback()) } 
     }, [user])
 
     const setEstaInfectado = async (vectorId, friendUid) => {
