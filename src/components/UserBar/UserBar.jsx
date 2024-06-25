@@ -1,36 +1,40 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../../auth/AuthContextProvider";
-import { Button, Card, IconButton } from "@mui/material";
+import React, { useState } from "react";
+import { Card, IconButton } from "@mui/material";
 import "./UserBar.css";
-import ColorModeContext from "../../theme/ColorModeContext";
-import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
-import AvatarWithStatus from "../AvatarWithStatus/AvatarWithStatus";
+import { ArrowBackIosOutlined, ArrowForwardIosOutlined, Opacity } from "@mui/icons-material";
+import ToggleModeButton from "../ToggleModeButton/ToggleModeButton";
+import UserInfo from "../UserInfo/UserInfo";
 
 const UserBar = () => {
-  const { user, logout, signIn } = useContext(AuthContext);
-  const { mode, toggleMode } = useContext(ColorModeContext);
+  const [hide, setHide] = useState(false)
+
+  const toggleHide = () => {
+    setHide(hide => !hide)
+  }
+
+  const hideStyle = hide ? 
+    { padding: 4, borderRadius: "50%", opacity: 0.8 } : 
+    {
+      borderRadius: 16,
+      paddingLeft: 16,
+      paddingRight: 16,
+      paddingTop: 8,
+      paddingBottom: 8,
+    }
+
 
   return (
-    <Card style={backgroundStyle}>
-      <IconButton onClick={toggleMode}>
-        {mode === "light" ? (
-          <DarkModeOutlined color="primary" />
-        ) : (
-          <LightModeOutlined color="secondary" />
-        )}
+    <Card elevation={1} style={{...backgroundStyle, ...hideStyle}}>
+      <IconButton onClick={toggleHide}> 
+        { hide ? <ArrowBackIosOutlined style={hideIconStyle} color="primary" /> : <ArrowForwardIosOutlined color="primary" /> }
       </IconButton>
-      {user ? (
-        <>
-            <Button variant="contained" onClick={logout}>
-            Cerrar sesion
-            </Button>
-            <AvatarWithStatus user={user} />
-        </>
-      ) : (
-        <>
-          <Button onClick={signIn} variant="contained">Iniciar sesion</Button>
-        </>
-      )}
+      {
+        !hide && <> 
+                  <ToggleModeButton />
+                  <UserInfo /> 
+                </>
+      }
+      
     </Card>
   );
 };
@@ -41,15 +45,15 @@ const backgroundStyle = {
   display: "flex",
   flexDirection: "row",
   gap: 8,
-  borderRadius: 16,
-  paddingLeft: 16,
-  paddingRight: 16,
-  paddingTop: 8,
-  paddingBottom: 8,
   position: "absolute",
   right: "0",
   top: "0",
   zIndex: 10,
 };
+
+const hideIconStyle = {
+  height: 12,
+  width: 12
+}
 
 export default UserBar;

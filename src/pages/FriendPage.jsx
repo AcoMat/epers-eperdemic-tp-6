@@ -5,6 +5,7 @@ import { Background } from "../components/Background/Background";
 import FriendsList from "../components/FriendsList/FriendsList";
 import SearchUser from "../components/SearchUser/SearchUser";
 import useSearch from "../hooks/useSearch";
+import './FriendPage.css'
 
 const FriendPage = () => {
   const { user, signIn, logout } = useContext(AuthContext);
@@ -18,9 +19,8 @@ const FriendPage = () => {
   }
 
   return (
-    <Background style={backgroundStyle}>
+    <Background className='friend-page-container'>
       <FriendsList
-        style={{ flexGrow: 2 }}
         friends={friends}
         onRemoveFriend={onRemoveFriend}
       />
@@ -29,23 +29,13 @@ const FriendPage = () => {
         onAddFriend={onAddFriend}
         friendsIds={friendsIds}
         onChange={changeSearch}
+        onSearchPress={() => {}}
         users={users}
         userId={user.uid}
         search={search}
       />
     </Background>
   );
-};
-
-const backgroundStyle = {
-  boxSizing: "border-box",
-  height: "100%",
-  width: "100%",
-  display: "flex",
-  flexDirection: "row",
-  overflowY: "hidden",
-  padding: 16,
-  gap: 16,
 };
 
 export default FriendPage;

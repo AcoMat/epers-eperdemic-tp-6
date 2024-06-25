@@ -2,25 +2,21 @@ import { AccountCircle, AccountCircleRounded, SearchOutlined } from '@mui/icons-
 import { Card, Divider, FormControl, IconButton, Input, InputAdornment, InputLabel, OutlinedInput, TextField } from '@mui/material'
 import React, { useContext, useState } from 'react'
 import UserSearched from '../UserSearched/UserSearched'
+import SimpleInput from '../SimpleInput/SimpleInput'
+import ColorModeContext from '../../theme/ColorModeContext'
 
-const SearchUser = ({search, onChange, style, users, friendsIds, onAddFriend, userId}) => {
+const SearchUser = ({search, onChange, style, users, friendsIds, onAddFriend, userId, onSearchPress}) => {
+  
+  const {mode} = useContext(ColorModeContext)
+
   return (
     <Card style={{...searchContainerStyle, ...style}}>
-        <OutlinedInput 
-          id='search-user-input'
-          color='primary'
-          onChange={onChange}
-          value={search}
-          endAdornment={
-            <InputAdornment position='end'>
-              <IconButton>
-                <SearchOutlined color='primary' />
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-        <Divider variant='middle' />
-        {users.map(user => <UserSearched userUid={userId} onFriendAddPress={onAddFriend} friendsIds={friendsIds} user={user} />)}
+      <SimpleInput placeholder="Buscar usuarios" onChange={onChange} value={search} onSearchPress={onSearchPress}>
+        <IconButton onClick={onSearchPress}>
+          <SearchOutlined color={mode === "dark" ?  "primary" :  "secondary"} />
+        </IconButton>
+      </SimpleInput>
+        {users.map(user => <UserSearched key={user.uid} userUid={userId} onFriendAddPress={onAddFriend} friendsIds={friendsIds} user={user} />)}
     </Card>
   )
 }

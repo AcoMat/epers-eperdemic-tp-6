@@ -1,17 +1,33 @@
 .friend-page-container {
     display: flex;
     flex-direction: row;
-    width: 100%;
     height: 100%;
-    overflow-y: hidden;
-    flex-grow: 1;
-    background-color: aqua;
+    padding: 16px;
+    gap: 16px;
 }
 
 .friend-page-container > :first-child {
-    flex-grow: 2;
+    width: 60%;
 }
 
 .friend-page-container > :nth-child(2) {
-    flex-grow: 1;
+    width: 40%;
+}
+
+@media only screen and (max-width: 1080px) {
+    .friend-page-container {
+        flex-direction: column;
+        overflow-y: scroll;
+    }
+
+    .friend-page-container > :first-child {
+        width: 100%;
+        order: 2;
+    }
+
+    .friend-page-container > :last-child {
+        width: 100%;
+        min-height: 50%;
+    }
+    
 }
