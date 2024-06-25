@@ -9,13 +9,17 @@ const useFriends = () => {
     const [friends, setFriends] = useState([])
     const [loading, setLoading] = useState(true)
 
+    console.log(friends)
+
     const changeUser = (user) => {
         setLoading(false)
-        if(!friends.some(friend => friend.uid === user.uid)){
-            setFriends(friends => [...friends, user]);
-        } else {
-            setFriends(friends => friends.map((friend) => friend.uid === user.uid ? user : friend))
-        }
+        setFriends(friends => {
+            const alreadyHasFriend = friends.some(friend => friend.uid === user.uid)
+            if(alreadyHasFriend) {
+                return friends.map((friend) => friend.uid === user.uid ? user : friend)
+            }
+            return [...friends, user];
+        })
     }
 
     const deleteNotLongerFriends = (uids) => {
@@ -24,6 +28,7 @@ const useFriends = () => {
             const id = path[path.length - 1]
             return id
         })
+        console.log("deleting no longer friends", mappedUids, friends)
         setFriends(friends => friends.filter((friend) => mappedUids.includes(friend.uid)))
     }
 
@@ -48,6 +53,7 @@ const useFriends = () => {
     useEffect(() => {
         if(!user) return;
         deleteNotLongerFriends(user.friendsIds)
+        console.log("actual friends", user.friendsIds)
         const callbacks = user.friendsIds.map(friendReference => {
             return onSnapshot(friendReference, (doc) => {
                 const path = friendReference._key.path.segments
