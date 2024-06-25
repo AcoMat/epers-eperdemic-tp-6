@@ -2,12 +2,12 @@ import { useTheme } from "@emotion/react";
 import { List } from "@mui/material";
 import Group from "../Group/Group";
 
-const GroupList = ({ groups, onAddMemberToGroup, user }) => {
+const GroupList = ({ groups, onAddMemberToGroup }) => {
   const theme = useTheme()
 
   return (
     <List style={{...groupListStyle, backgroundColor: theme.palette.background.default, flexGrow: 2 }}>
-      {groups.map(group => <Group group={group} onRemove={onAddMemberToGroup} user={user} />)}
+      {groups.map(group => <Group key={group.name} group={group} onAddMemberToGroup={onAddMemberToGroup} />)}
     </List>
   ) 
 };

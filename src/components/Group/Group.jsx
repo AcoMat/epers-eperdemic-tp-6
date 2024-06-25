@@ -7,21 +7,20 @@ import {
   ListItemText,
 } from "@mui/material";
 import { GroupAddOutlined } from "@mui/icons-material";
-import AvatarWithStatus from "../AvatarWithStatus/AvatarWithStatus";
 
-const Group = ({ group, onAddMemberToGroup, user }) => {
+const Group = ({ group, onAddMemberToGroup }) => {
 
     return (
       <ListItem
         style={{ ...cardStyle }}
         secondaryAction={
-          <IconButton onClick={() => onAddMemberToGroup(user, group.name)}>
+          <IconButton onClick={() => onAddMemberToGroup(group.name)}>
             <GroupAddOutlined />
           </IconButton>
         }
       >
         <ListItemAvatar>
-          <AvatarWithStatus user={group.lider} avatarStyle={{ height: 56, width: 56 }} />
+          <p style={{ color: 'white' }}>{group.name}</p>
         </ListItemAvatar>
         <ListItemText primary={group.lider.displayName} />
       </ListItem>

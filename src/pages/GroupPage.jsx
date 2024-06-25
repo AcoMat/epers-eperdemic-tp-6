@@ -3,6 +3,8 @@ import { AuthContext } from "../auth/AuthContextProvider";
 import { Background } from "../components/Background/Background";
 import GroupList from "../components/GroupsList/GroupsList";
 import useGroups from "../hooks/useGroups";
+import { IconButton } from "@mui/material";
+import { GroupAddRounded } from "@mui/icons-material";
 
 const GroupPage = () => {
   const { user, signIn, logout } = useContext(AuthContext);
@@ -14,6 +16,9 @@ const GroupPage = () => {
 
   return (
     <Background style={backgroundStyle}>
+      <IconButton onClick={() => onCreateGroup("grupaso 2")}>
+        <GroupAddRounded color="primary"/>
+      </IconButton>
       <GroupList
         groups={groups}
         onAddMemberToGroup={onAddMemberToGroup}
