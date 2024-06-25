@@ -7,7 +7,6 @@ export default function SignInGoogle() {
     const handleClick = async () => {
         try {
             const result = await signInWithPopup(auth,provider);
-            console.log(result)
             localStorage.setItem("token",result.user.getIdToken);
         } catch (error) {
             console.error(error);

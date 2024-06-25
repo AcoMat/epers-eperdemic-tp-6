@@ -14,8 +14,6 @@ const MapPage = () => {
     const {locations, districts} = mapItems
     const { friends } = useFriends()
     const friendsWithLocation = friends.filter(friend => !!friend.location)
-    console.log(friends)
-    console.log(friendsWithLocation)
 
     useEffect(() => {
       if (isLocationEnabled) {

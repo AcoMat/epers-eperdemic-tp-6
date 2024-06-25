@@ -45,7 +45,6 @@ const AuthContextProvider = ({ children }) => {
   const createUserIfNotInDatabase = async (user) => {
     const docRef = doc(databaseFirestore, "users", user.uid);
     const fetchedUser = await getDoc(docRef);
-    console.log(user);
     if (!fetchedUser.exists()) {
       const vectorId = await createVector({ type: "HUMANO", ubicacionId: 1 });
       await setDoc(docRef, {

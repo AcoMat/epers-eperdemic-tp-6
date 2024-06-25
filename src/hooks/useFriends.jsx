@@ -9,18 +9,26 @@ const useFriends = () => {
     const [friends, setFriends] = useState([])
     const [loading, setLoading] = useState(true)
 
+    console.log(friends)
+
     const changeUser = (user) => {
         setLoading(false)
-        console.log(user)
+        console.log("changing user", user)
         if(!friends.some(friend => friend.uid === user.uid)){
             setFriends(friends => [...friends, user]);
         } else {
             setFriends(friends => friends.map((friend) => friend.uid === user.uid ? user : friend))
         }
+        console.log("friends after changing one friend", friends)
     }
 
     const deleteNotLongerFriends = (uids) => {
-        setFriends(friends => friends.filter((friend) => friend.uid in uids))
+        const mappedUids = uids.map(uid => {
+            const path = uid._key.path.segments
+            const id = path[path.length - 1]
+            return id
+        })
+        setFriends(friends => friends.filter((friend) => mappedUids.includes(friend.uid)))
     }
 
     const onRemoveFriend = async (friend) => {
