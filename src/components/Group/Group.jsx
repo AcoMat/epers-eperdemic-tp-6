@@ -34,6 +34,7 @@ const cardStyle = {
   display: "flex",
   flexDirection: "row",
   gap: 16,
+  width: '40%'
 };
 
 export default Group;
