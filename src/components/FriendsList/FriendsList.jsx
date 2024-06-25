@@ -1,22 +1,14 @@
 import React from 'react'
 import Friend from '../Friend/Friend'
 import { List } from '@mui/material'
-import { useTheme } from '@emotion/react'
+import './FriendList.css'
 
 const FriendsList = ({friends, onRemoveFriend, style}) => {
-  const theme = useTheme()
-
   return (
-    <List style={{...friendListStyle, backgroundColor: theme.palette.background.default, ...style}}>
-      {friends.map(friend => <Friend user={friend} onRemove={onRemoveFriend} />)}
+    <List className='friend-list-container' style={{...style}}>
+      {friends.map(friend => <Friend key={friend.uid} style={{width: "50%"}} user={friend} onRemove={onRemoveFriend} />)}
     </List>
   ) 
-}
-
-const friendListStyle = {
-  height: "100%",
-  width: "auto",
-  overflowY: "scroll"
 }
 
 export default FriendsList

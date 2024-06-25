@@ -9,10 +9,10 @@ import {
 import { PersonRemoveOutlined } from "@mui/icons-material";
 import AvatarWithStatus from "../AvatarWithStatus/AvatarWithStatus";
 
-const Friend = ({ user, onRemove }) => {
+const Friend = ({ user, onRemove, style }) => {
   return (
     <ListItem
-      style={{ ...cardStyle }}
+      style={{ ...cardStyle, ...style }}
       secondaryAction={
         <IconButton onClick={() => onRemove(user)}>
           <PersonRemoveOutlined />
@@ -30,7 +30,6 @@ const Friend = ({ user, onRemove }) => {
 const cardStyle = {
   padding: 16,
   display: "flex",
-  flexDirection: "row",
   gap: 16,
 };
 

@@ -1,15 +1,19 @@
+const main = '#a15097'
+const secondary = '#f3f0e0'
+
 const getDesignToken = (mode) => ({
     palette: {
         mode: 'light',
         primary: {
-            main: '#a15097',
+            main: main,
         },
         secondary: {
-            main: '#f3f0e0'
+            main: secondary
         },
         background: {
-            card: mode === 'light' ? '#eddded' : '#423741',
+            card: mode === 'light' ? '#eddded' : '#2c252b',
             default: mode === 'light' ? '#f3f0f3' : '#1c181c',
+            onBackground: mode === 'light' ? main : '#f3f0e0'
         }
     },
     components: {
@@ -76,6 +80,7 @@ const getDesignToken = (mode) => ({
                         fill: mode === 'light' ? theme.palette.primary.dark : theme.palette.secondary.light
                     },
                     '& .MuiSvgIcon-root': {
+                        boxSizing: "content-box",
                         fill: mode === 'light' ? theme.palette.primary.main : theme.palette.secondary.light
                     }
                 }),
