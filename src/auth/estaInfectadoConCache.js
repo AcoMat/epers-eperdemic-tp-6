@@ -8,8 +8,6 @@ const estaInfectadoConCache = async (vectorId) => {
     const reload = noLoTengo || noHaceFalta(vectorRecuperado)
     if(reload) {
         const estaInfectado = await isInfectado(vectorId)
-        console.log("refreshing", estaInfectado)
-
         vectoresVistos[vectorId] = {
             estaInfectado: estaInfectado,
             lastRefresh: Date.now()
