@@ -13,6 +13,7 @@ import mapDistrictToPoints from "../../utils/mapDistrictToPoints";
 import mapUserToPoint from "../../utils/mapUserToPoint";
 import { Fab } from "@mui/material";
 import { AdjustRounded } from "@mui/icons-material";
+import mapFriendsToPoints from "../../utils/mapFriendsToPoints";
 
 const arePropsEquals = (oldProps, newProps) => {
   return (
@@ -32,6 +33,7 @@ const MapComponent = memo(
     userLocation,
     onRadiusChange,
     onLocationChanged,
+    friends
   }) => {
     const mapRef = useRef(null);
     const goCenter = useRef(null);
@@ -150,9 +152,10 @@ const MapComponent = memo(
         mapUserToPoint(userLocation),
         ...mapLocationToPoints(locations),
         ...mapDistrictToPoints(districts),
+        ...mapFriendsToPoints(friends)
       ];
       reloadFeatures.current(features);
-    }, [userLocation, districts, locations]);
+    }, [userLocation, districts, locations, friends]);
 
     useEffect(() => {
       goCenter.current(userLocation);

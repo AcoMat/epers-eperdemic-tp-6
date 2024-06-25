@@ -64,8 +64,15 @@ const AuthContextProvider = ({ children }) => {
     setFirestoreUser(undefined);
   };
 
+  const setUserLocation = async (location) => {
+    const userRef = doc(databaseFirestore, "users", user.uid)
+    await updateDoc(userRef, {
+      location: location
+    })
+  }
+
   return (
-    <AuthContext.Provider value={{ user: firestoreUser, logout, signIn }}>
+    <AuthContext.Provider value={{ user: firestoreUser, logout, signIn, setUserLocation }}>
       {children}
     </AuthContext.Provider>
   );

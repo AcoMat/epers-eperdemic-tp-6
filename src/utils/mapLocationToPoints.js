@@ -8,7 +8,6 @@ const mapLocationToPoints = (locations) => locations.map((location) => {
   const feature =  new Feature({
     geometry: new Point(fromLonLat([longitud, latitud])),
     name: 'Point',
-    style: styles.markerStyle
   });
   feature.setStyle(styles.markerStyle)
   return feature
