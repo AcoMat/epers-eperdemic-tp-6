@@ -16,7 +16,9 @@ const SearchUser = ({search, onChange, style, users, friendsIds, onAddFriend, us
           <SearchOutlined color={mode === "dark" ?  "primary" :  "secondary"} />
         </IconButton>
       </SimpleInput>
+      <ul style={scrollStyle}>
         {users.map(user => <UserSearched key={user.uid} userUid={userId} onFriendAddPress={onAddFriend} friendsIds={friendsIds} user={user} />)}
+      </ul>
     </Card>
   )
 }
@@ -28,6 +30,10 @@ const searchContainerStyle = {
   padding: 16,
   width: "auto",
   gap: 16,
+  overflowY: "hidden"
+}
+
+const scrollStyle = {
   overflowY: "scroll"
 }
 

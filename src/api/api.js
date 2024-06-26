@@ -1,4 +1,6 @@
 import axios from "axios"
+import { doc, getDoc } from "firebase/firestore"
+import { databaseFirestore } from "../configs/firebase"
 
 const url = process.env.REACT_APP_API_URL
 
@@ -33,4 +35,12 @@ const isInfectado = async (vectorId) => {
     return response.data
 }
 
-export { getMapItems, createVector, getVector, isInfectado }
+const getUser = async (uid) => {
+    const userFirebaseDocRef = doc(databaseFirestore, "users", uid)
+    const userFirebase = (await getDoc(userFirebaseDocRef)).data()
+    const estaInfectado = await isInfectado(userFirebase.vectorId)
+    const vectorInfo = await getVector({vectorId: userFirebase.vectorId})
+    return {...userFirebase, ...vectorInfo, estaInfectado: estaInfectado}
+}
+
+export { getUser, getMapItems, createVector, getVector, isInfectado }

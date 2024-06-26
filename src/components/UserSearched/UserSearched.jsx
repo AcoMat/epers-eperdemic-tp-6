@@ -1,6 +1,5 @@
 import { PersonAddOutlined } from '@mui/icons-material'
 import { Avatar, IconButton, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
-import React, { useEffect } from 'react'
 
 const UserSearched = ({user, friendsIds, onFriendAddPress, userUid}) => {
   const isFriend = friendsIds.some(friendId => friendId === user.uid)

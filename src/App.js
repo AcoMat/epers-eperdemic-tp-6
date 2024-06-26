@@ -5,9 +5,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 import { useMemo, useState } from 'react';
 import getDesignToken from './utils/theme';
-import { createTheme } from '@mui/material';
+import { Dialog, createTheme } from '@mui/material';
 import AuthContextProvider from './auth/AuthContextProvider';
 import ColorModeContext from './theme/ColorModeContext'
+import DialogContextProvider from './dialogs/DialogContextProvider';
 
 function App() {
   const [mode, setMode] = useState('dark')
@@ -20,13 +21,15 @@ function App() {
   return (
     <AuthContextProvider>
       <ColorModeContext.Provider value={{mode, toggleMode}}>
-        <BrowserRouter>
-          <ThemeProvider theme={theme}>
-              <AppTemplate>
-                <AppRoutes />
-              </AppTemplate>
-          </ThemeProvider>
-        </BrowserRouter>
+          <BrowserRouter>
+            <ThemeProvider theme={theme}>
+              <DialogContextProvider>
+                <AppTemplate>
+                  <AppRoutes />
+                </AppTemplate>
+              </DialogContextProvider>
+            </ThemeProvider>
+          </BrowserRouter>
       </ColorModeContext.Provider>
     </AuthContextProvider>
   );
