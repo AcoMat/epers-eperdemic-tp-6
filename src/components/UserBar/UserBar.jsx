@@ -1,15 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Card, IconButton } from "@mui/material";
 import "./UserBar.css";
-import { ArrowBackIosOutlined, ArrowForwardIosOutlined, Opacity } from "@mui/icons-material";
+import { ArrowBackIosOutlined, ArrowForwardIosOutlined } from "@mui/icons-material";
 import ToggleModeButton from "../ToggleModeButton/ToggleModeButton";
 import UserInfo from "../UserInfo/UserInfo";
+import { AuthContext } from "../../auth/AuthContextProvider";
+import { DialogContext } from "../../dialogs/DialogContextProvider";
 
 const UserBar = () => {
   const [hide, setHide] = useState(false)
-
+  const { user, logout, signIn } = useContext(AuthContext);
+  const { showUserProfile } = useContext(DialogContext)
   const toggleHide = () => {
     setHide(hide => !hide)
+  }
+
+  const onUserAvatarPress = () => {
+    showUserProfile(user.uid)
   }
 
   const hideStyle = hide ? 
@@ -31,7 +38,7 @@ const UserBar = () => {
       {
         !hide && <> 
                   <ToggleModeButton />
-                  <UserInfo /> 
+                  <UserInfo onUserClick={onUserAvatarPress} user={user} logout={logout} signIn={signIn} /> 
                 </>
       }
       

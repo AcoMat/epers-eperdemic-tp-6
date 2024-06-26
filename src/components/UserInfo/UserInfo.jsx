@@ -1,23 +1,22 @@
-import { Button } from '@mui/material';
-import React, { useContext } from 'react'
-import AvatarWithStatus from '../AvatarWithStatus/AvatarWithStatus';
-import { AuthContext } from '../../auth/AuthContextProvider';
+import { Button } from "@mui/material";
+import React from "react";
+import AvatarWithStatus from "../AvatarWithStatus/AvatarWithStatus";
 
-const UserInfo = () => {
-const { user, logout, signIn } = useContext(AuthContext);
+const UserInfo = ({ user, logout, signIn, onUserClick }) => {
+  if (user) {
+    return (
+      <>
+        <Button variant="contained" onClick={logout}>
+          Cerrar sesion
+        </Button>
+        <AvatarWithStatus onClick={onUserClick} user={user} />
+      </>
+    );
+  } else {
+    <Button onClick={signIn} variant="contained">
+      Iniciar sesion
+    </Button>;
+  }
+};
 
-    if(user) {
-        return (
-            <>
-                <Button variant="contained" onClick={logout}>
-                Cerrar sesion
-                </Button>
-                <AvatarWithStatus user={user} />
-            </>
-        )
-    } else {
-          <Button onClick={signIn} variant="contained">Iniciar sesion</Button>
-    }
-}
-
-export default UserInfo
+export default UserInfo;

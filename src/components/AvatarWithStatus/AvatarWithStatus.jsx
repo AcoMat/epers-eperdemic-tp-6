@@ -2,7 +2,7 @@ import { Avatar, Badge, Tooltip } from '@mui/material'
 import React from 'react'
 import UserStatus from '../UserStatus/UserStatus'
 
-const AvatarWithStatus = ({avatarStyle, user}) => {
+const AvatarWithStatus = ({avatarStyle, user, onClick, selectable = true}) => {
   const estado = () => {
     if(user.estaInfectado === null) return "Cargando..."
     if(user.estaInfectado) return "Infectado"
@@ -15,7 +15,7 @@ const AvatarWithStatus = ({avatarStyle, user}) => {
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             badgeContent={<UserStatus user={user} />}
           >
-            <Avatar style={{...avatarStyle}} src={user.photoUrl} />
+            <Avatar sx={{cursor: selectable ? 'pointer' : 'unset'}} onClick={onClick} style={{...avatarStyle}} src={user.photoUrl} />
       </Badge>
     </Tooltip>
   )
