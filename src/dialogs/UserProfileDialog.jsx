@@ -50,7 +50,7 @@ const UserProfileDialog = ({ uid, show, onClose }) => {
       onClose={onClose}
     >
       {isLoading ? (
-        <Loading />
+        <Loading style={{width: "auto", height: "auto", padding: 16}} />
       ) : (
         <Card
           elevation={3}

@@ -2,9 +2,9 @@ import React from 'react'
 import { Background } from '../Background/Background'
 import { CircularProgress } from '@mui/material'
 
-const Loading = () => {
+const Loading = ({style}) => {
   return (
-    <Background style={backgroundStyle}>
+    <Background style={{...backgroundStyle, ...style}}>
         <CircularProgress color='primary' />
     </Background>
   )
