@@ -34,7 +34,7 @@ const SimpleInput = forwardRef(function SimpleInput(
 const inputContainerStyle = {
     width: "100%",
     display: "flex",
-    borderRadius: 24,
+    borderRadius: 16,
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 8,

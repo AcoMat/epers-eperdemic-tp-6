@@ -38,8 +38,9 @@ const isInfectado = async (vectorId) => {
 const getUser = async (uid) => {
     const userFirebaseDocRef = doc(databaseFirestore, "users", uid)
     const userFirebase = (await getDoc(userFirebaseDocRef)).data()
+    const estaInfectado = await isInfectado(userFirebase.vectorId)
     const vectorInfo = await getVector({vectorId: userFirebase.vectorId})
-    return {...userFirebase, ...vectorInfo}
+    return {...userFirebase, ...vectorInfo, estaInfectado: estaInfectado}
 }
 
 export { getUser, getMapItems, createVector, getVector, isInfectado }
