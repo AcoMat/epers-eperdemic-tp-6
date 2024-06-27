@@ -18,6 +18,7 @@ const CreateGroupDialog = ({ show, onClose, user }) => {
 
     const createGroup = async () => {
         await createGroupApi(name.trim(), user)
+        onClose()
     }
 
     useEffect(() => {
