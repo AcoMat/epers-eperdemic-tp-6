@@ -5,10 +5,13 @@ import GroupList from "../components/GroupsList/GroupsList";
 import useGroups from "../hooks/useGroups";
 import { IconButton } from "@mui/material";
 import { GroupAddRounded } from "@mui/icons-material";
+import Leaderboard from "../components/Leaderboard/Leaderboard";
+import useLeaderboard from "../hooks/useLeaderboard";
 
 const GroupPage = () => {
   const { user, signIn, logout } = useContext(AuthContext);
   const { onAddMemberToGroup, onCreateGroup, groups } = useGroups();
+  const { leaderboardGroups, isLoading } = useLeaderboard()
 
   if (!user) {
     return <button onClick={signIn}>login</button>;
@@ -16,27 +19,29 @@ const GroupPage = () => {
 
   return (
     <Background style={backgroundStyle}>
-      <IconButton onClick={() => onCreateGroup("grupaso 2")}>
-        <GroupAddRounded color="primary"/>
-      </IconButton>
-      <GroupList
-        groups={groups}
-        onAddMemberToGroup={onAddMemberToGroup}
-        user={user}
-      />
+      <section style={{flexGrow: 1, display: "flex"}}>
+        <IconButton onClick={() => onCreateGroup("grupaso 2")}>
+          <GroupAddRounded color="primary"/>
+        </IconButton>
+        <GroupList
+          groups={groups}
+          onAddMemberToGroup={onAddMemberToGroup}
+          user={user}
+        />
+      </section>
+      <Leaderboard onAddMemberToGroup={onAddMemberToGroup} groups={leaderboardGroups} />
     </Background>
   );
 };
 
 const backgroundStyle = {
-  boxSizing: "border-box",
   height: "100%",
   width: "100%",
   display: "flex",
   flexDirection: "row",
-  overflowY: "hidden",
-  padding: 16,
   gap: 16,
+  padding: 32,
+  boxSizing: "border-box"
 };
 
 export default GroupPage;

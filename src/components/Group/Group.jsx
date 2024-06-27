@@ -10,22 +10,24 @@ import {
 import { GroupAddOutlined } from "@mui/icons-material";
 import { stringAvatar } from "../../utils/stringAvatar";
 
-const Group = ({ group, onAddMemberToGroup }) => {
+const Group = ({ group, onAddMemberToGroup, points }) => {
   const name = useMemo(() => {
     return stringAvatar(group.name)
   }, [group.name])
   
     return (
       <ListItem
-        style={{ ...cardStyle }}
+        style={cardStyle}
         secondaryAction={
           <IconButton onClick={() => onAddMemberToGroup(group.name)}>
             <GroupAddOutlined />
           </IconButton>
         }
       >
-        <Avatar {...name} name />
-        <ListItemText primary={group.name} />
+        <ListItemAvatar>
+          <Avatar style={{height: 56, width: 56}} {...name} name />
+        </ListItemAvatar>
+        <ListItemText primary={group.name} secondary={points && `Puntos: ${points}`} />
       </ListItem>
     );
   
@@ -37,7 +39,7 @@ const cardStyle = {
   display: "flex",
   flexDirection: "row",
   gap: 16,
-  width: '40%'
+  width: '100%'
 };
 
 export default Group;
