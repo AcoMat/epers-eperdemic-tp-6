@@ -4,7 +4,7 @@ import BottomBar from '../components/BottomBar/BottomBar'
 import UserBar from '../components/UserBar/UserBar';
 import { AuthContext } from '../auth/AuthContextProvider';
 import Login from '../components/Login/Login';
-import { Fade, Slide } from '@mui/material';
+import { Slide } from '@mui/material';
 import Loading from '../components/Loading/Loading';
 
 const AppTemplate = ({children}) => {

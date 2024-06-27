@@ -171,9 +171,8 @@ const MapComponent = memo(
             position: "absolute",
             left: 0,
             bottom: 0,
-            gap: "8px",
-            marginBottom: "8px",
-            marginLeft: "8px",
+            marginBottom: "24px",
+            marginLeft: "24px",
           }}
           variant="circular"
         >

@@ -17,8 +17,6 @@ const AuthContextProvider = ({ children }) => {
   const [firestoreUser, setFirestoreUser] = useState(loadingFirestoreUser);
   const loadingUser = firestoreUser.isLoading
 
-  console.log(error)
-
   useEffect(() => {
     const createUserAync = async () => {
       await createUserIfNotInDatabase(user);
