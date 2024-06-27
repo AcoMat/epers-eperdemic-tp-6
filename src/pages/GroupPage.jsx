@@ -3,33 +3,48 @@ import { AuthContext } from "../auth/AuthContextProvider";
 import { Background } from "../components/Background/Background";
 import GroupList from "../components/GroupsList/GroupsList";
 import useGroups from "../hooks/useGroups";
-import { IconButton } from "@mui/material";
-import { GroupAddRounded } from "@mui/icons-material";
+import { Fab } from "@mui/material";
+import { GroupAddRounded, GroupsRounded } from "@mui/icons-material";
 import Leaderboard from "../components/Leaderboard/Leaderboard";
 import useLeaderboard from "../hooks/useLeaderboard";
+import { DialogContext } from "../dialogs/DialogContextProvider";
 
 const GroupPage = () => {
-  const { user, signIn, logout } = useContext(AuthContext);
-  const { onAddMemberToGroup, onCreateGroup, groups } = useGroups();
-  const { leaderboardGroups, isLoading } = useLeaderboard()
-
-  if (!user) {
-    return <button onClick={signIn}>login</button>;
-  }
+  const { user } = useContext(AuthContext);
+  const { onLeaveGroup, onAddMemberToGroup, groups } = useGroups();
+  const { leaderboardGroups } = useLeaderboard();
+  const { showCreateGroup } = useContext(DialogContext);
 
   return (
     <Background style={backgroundStyle}>
-      <section style={{flexGrow: 1, display: "flex"}}>
-        <IconButton onClick={() => onCreateGroup("grupaso 2")}>
-          <GroupAddRounded color="primary"/>
-        </IconButton>
+      <Fab
+        color="primary"
+        style={{
+          position: "absolute",
+          left: 0,
+          bottom: 0,
+          marginBottom: "24px",
+          marginLeft: "24px",
+        }}
+        onClick={showCreateGroup}
+        variant="circular"
+      >
+        <GroupsRounded />
+      </Fab>
+      <section style={{ flexGrow: 1, display: "flex" }}>
         <GroupList
           groups={groups}
           onAddMemberToGroup={onAddMemberToGroup}
+          onLeaveGroup={onLeaveGroup}
           user={user}
         />
       </section>
-      <Leaderboard onAddMemberToGroup={onAddMemberToGroup} groups={leaderboardGroups} />
+      <Leaderboard
+        onLeaveGroup={onLeaveGroup}
+        onAddMemberToGroup={onAddMemberToGroup}
+        groups={leaderboardGroups}
+        user={user}
+      />
     </Background>
   );
 };
@@ -41,7 +56,7 @@ const backgroundStyle = {
   flexDirection: "row",
   gap: 16,
   padding: 32,
-  boxSizing: "border-box"
+  boxSizing: "border-box",
 };
 
 export default GroupPage;

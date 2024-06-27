@@ -1,6 +1,7 @@
 import axios from "axios"
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { arrayRemove, arrayUnion, collection, doc, getDoc, runTransaction, setDoc, updateDoc } from "firebase/firestore"
 import { databaseFirestore } from "../configs/firebase"
+import { get } from "firebase/database"
 
 const url = process.env.REACT_APP_API_URL
 
@@ -58,4 +59,72 @@ const createUserIfNotInDatabase = async (user) => {
     }
   };
 
-export { getUser, getMapItems, createVector, getVector, isInfectado, createUserIfNotInDatabase }
+const createGroup = async (groupName, user) => {
+    const userRef = doc(databaseFirestore, "users", user.uid)
+    const groupRef = collection(databaseFirestore, "groups", groupName)
+    runTransaction(databaseFirestore, async (transaction) => {
+        const fetchedUser = (await transaction.get(userRef)).data()
+        if(fetchedUser.group) { await leaveActualUserGroup(transaction, userRef, fetchedUser.group) }
+        await setDoc(groupRef, {
+            name: groupName,
+            lider: userRef,
+            members: [userRef],
+            points: 0
+        })
+        await updateDoc(userRef, {
+            group: groupRef
+        })
+    })    
+}
+
+const leaveActualUserGroup = async (transaction, userRef, groupRef) => {
+    await transaction.update(userRef, {
+        group: null
+    })
+    await transaction.update(groupRef, {
+        members: arrayRemove(userRef)
+    })
+}
+
+const getId = (ref) => {
+    const path = ref?._key?.path?.segments
+    return path && path[path.length - 1]
+}
+
+const joinGroup = async (groupName, user) => {
+    const userRef = doc(databaseFirestore, "users", user.uid)
+    const groupRef = doc(databaseFirestore, "groups", groupName)
+    runTransaction(databaseFirestore, async (transaction) => {
+        const fetchedUser = (await transaction.get(userRef)).data()
+        if(fetchedUser.group) { 
+            await leaveActualUserGroup(transaction, userRef, fetchedUser.group) 
+        }
+        await transaction.update(groupRef, {
+            members: arrayUnion(userRef)
+        })
+        await transaction.update(userRef, {
+            group: groupRef
+        })
+    })
+}
+
+const leaveGroup = async (groupName, user) => {
+    const userRef = doc(databaseFirestore, "users", user.uid)
+    const groupRef = doc(databaseFirestore, "groups", groupName)
+    runTransaction(databaseFirestore, async (transaction) => {
+        const fetchedUser = (await transaction.get(userRef)).data()
+        console.log(fetchedUser)
+        await transaction.update(groupRef, {
+            members: arrayRemove(userRef)
+        })
+        const actualGroupId = getId(fetchedUser.group)
+        const originalGroupId = getId(groupRef)
+        if(actualGroupId === originalGroupId) {
+            await transaction.update(userRef, {
+                group: null
+            })
+        }
+    })
+}
+
+export {leaveGroup, joinGroup, getUser, getMapItems, createVector, getVector, isInfectado, createUserIfNotInDatabase, createGroup }

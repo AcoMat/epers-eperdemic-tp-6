@@ -7,21 +7,31 @@ import {
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
-import { GroupAddOutlined } from "@mui/icons-material";
+import { GroupAddOutlined, GroupRemoveOutlined } from "@mui/icons-material";
 import { stringAvatar } from "../../utils/stringAvatar";
 
-const Group = ({ group, onAddMemberToGroup, points }) => {
+const Group = ({ group, onAddMemberToGroup, points, onLeaveGroup, user }) => {
   const name = useMemo(() => {
     return stringAvatar(group.name);
   }, [group.name]);
+
+  const userInGroup = group.members.some(member => {
+    const path = member._key.path.segments
+    const id = path[path.length - 1]
+    return id === user.uid
+  })
 
   return (
     <ListItem
       style={cardStyle}
       secondaryAction={
-        <IconButton onClick={() => onAddMemberToGroup(group.name)}>
-          <GroupAddOutlined />
-        </IconButton>
+        userInGroup ? 
+          <IconButton onClick={() => onLeaveGroup(group.name)}> 
+            <GroupRemoveOutlined /> 
+          </IconButton> :
+          <IconButton onClick={() => onAddMemberToGroup(group.name)}>
+            <GroupAddOutlined />
+          </IconButton> 
       }
     >
       <ListItemAvatar>
@@ -32,6 +42,7 @@ const Group = ({ group, onAddMemberToGroup, points }) => {
           <ListItemText
             secondary={group.name}
             primaryTypographyProps={{color: "background.onBackground", fontWeight: 600}}
+            secondaryTypographyProps={{color: "background.onBackground"}}
             primary={points === undefined ? null : `Puntos: ${points}`}/>
           :
           <ListItemText
