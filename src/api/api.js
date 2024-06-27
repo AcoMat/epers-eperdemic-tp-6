@@ -1,5 +1,5 @@
 import axios from "axios"
-import { doc, getDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc } from "firebase/firestore"
 import { databaseFirestore } from "../configs/firebase"
 
 const url = process.env.REACT_APP_API_URL
@@ -43,4 +43,19 @@ const getUser = async (uid) => {
     return {...userFirebase, ...vectorInfo, estaInfectado: estaInfectado}
 }
 
-export { getUser, getMapItems, createVector, getVector, isInfectado }
+const createUserIfNotInDatabase = async (user) => {
+    const docRef = doc(databaseFirestore, "users", user.uid);
+    const fetchedUser = await getDoc(docRef);
+    if (!fetchedUser.exists()) {
+      const vectorId = await createVector({ type: "HUMANO", ubicacionId: 1 });
+      await setDoc(docRef, {
+        vectorId: vectorId,
+        friendsIds: [],
+        photoUrl: user.photoURL,
+        displayName: user.displayName,
+        uid: user.uid 
+      });
+    }
+  };
+
+export { getUser, getMapItems, createVector, getVector, isInfectado, createUserIfNotInDatabase }

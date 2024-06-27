@@ -3,32 +3,45 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, databaseFirestore, provider } from "../configs/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { doc, getDoc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
-import { createVector } from "../api/api";
+import { createUserIfNotInDatabase, createVector } from "../api/api";
 
 const AuthContext = createContext();
+const loadingFirestoreUser = {isLoading: true, firestoreUser: undefined}
+const notLoggedInFirestoreUser = {isLoading: false, firestoreUser: undefined}
+const loadingFirestoreUserId = {isLoading: true, id: null}
+const notLoggedInFirestoreUserId = {isLoading: false, id: null}
 
 const AuthContextProvider = ({ children }) => {
-  const [user, loading, error] = useAuthState(auth, provider);
-  const [firestoreUserId, setFirestoreUserId] = useState(null);
-  const [firestoreUser, setFirestoreUser] = useState(undefined);
+  const [user, loading, error] = useAuthState(auth, {...provider, onUserChanged: createUserIfNotInDatabase});
+  const [firestoreUserId, setFirestoreUserId] = useState(loadingFirestoreUserId);
+  const [firestoreUser, setFirestoreUser] = useState(loadingFirestoreUser);
+  const loadingUser = firestoreUser.isLoading
+
+  console.log(error)
 
   useEffect(() => {
     const createUserAync = async () => {
       await createUserIfNotInDatabase(user);
-      setFirestoreUserId(user?.uid);
+      setFirestoreUserId({isLoading: false, id: user?.uid});
     };
+    if (loading) {
+      return setFirestoreUserId(loadingFirestoreUserId)
+    }
     if (user) {
       createUserAync();
+    } else {
+      setFirestoreUserId(notLoggedInFirestoreUserId)
     }
-  }, [user]);
+  }, [user, loading]);
 
   useEffect(() => {
-    if (firestoreUserId === null) return;
+    if(firestoreUserId.isLoading) return setFirestoreUser(loadingFirestoreUser);
+    if(firestoreUserId.id === null) return setFirestoreUser(notLoggedInFirestoreUser);
     let unsuscribe = () => {};
     unsuscribe = onSnapshot(
-      doc(databaseFirestore, "users", firestoreUserId),
+      doc(databaseFirestore, "users", firestoreUserId.id),
       (doc) => {
-        setFirestoreUser({ ...user, ...doc.data() });
+        setFirestoreUser({isLoading: false, firestoreUser: {...user, ...doc.data()} });
       }
     );
     return unsuscribe;
@@ -36,31 +49,17 @@ const AuthContextProvider = ({ children }) => {
 
   const signIn = async () => {
     try {
-      await signInWithPopup(auth, provider);
+      const sign = await signInWithPopup(auth, provider);
+      console.log(sign)
     } catch (error) {
       logout();
     }
   };
 
-  const createUserIfNotInDatabase = async (user) => {
-    const docRef = doc(databaseFirestore, "users", user.uid);
-    const fetchedUser = await getDoc(docRef);
-    if (!fetchedUser.exists()) {
-      const vectorId = await createVector({ type: "HUMANO", ubicacionId: 1 });
-      await setDoc(docRef, {
-        vectorId: vectorId,
-        friendsIds: [],
-        photoUrl: user.photoURL,
-        displayName: user.displayName,
-        uid: user.uid 
-      });
-    }
-  };
-
   const logout = () => {
     signOut(auth);
-    setFirestoreUserId(null);
-    setFirestoreUser(undefined);
+    setFirestoreUserId(notLoggedInFirestoreUserId);
+    setFirestoreUser(notLoggedInFirestoreUser);
   };
 
   const setUserLocation = async (location) => {
@@ -71,7 +70,7 @@ const AuthContextProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user: firestoreUser, logout, signIn, setUserLocation }}>
+    <AuthContext.Provider value={{ user: firestoreUser.firestoreUser, logout, signIn, setUserLocation, isLoading: loadingUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,0 +1,42 @@
+.login-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    flex-direction: row;
+}
+
+.login-content-container {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 32px;
+    padding-right: 32px;
+    justify-content: center;
+    gap: 16px;
+}
+
+.map-icon {
+    bottom: 0;
+    height: 100%;
+    aspect-ratio: 1/1;
+    z-index: 0;
+}
+
+@media only screen and (max-width: 1280px) {
+    .login-container {
+        flex-direction: "column";
+    }
+
+    .map-icon {
+        position: absolute;
+        bottom: 0;
+        opacity: 0.2;
+        height: auto;
+        width: 100%;
+        aspect-ratio: unset;
+        border-radius: 50%;
+        transform: translateY(50%);
+    }
+}
