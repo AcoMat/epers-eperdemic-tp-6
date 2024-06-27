@@ -9,11 +9,16 @@ import { Dialog, createTheme } from '@mui/material';
 import AuthContextProvider from './auth/AuthContextProvider';
 import ColorModeContext from './theme/ColorModeContext'
 import DialogContextProvider from './dialogs/DialogContextProvider';
+import { getLastThemeMode, setTheme } from './utils/lastThemeMode';
 
 function App() {
-  const [mode, setMode] = useState('dark')
+  const [mode, setMode] = useState(getLastThemeMode())
   const toggleMode = () => {
-    setMode((prevMode) => prevMode === 'light' ? 'dark': 'light')
+    setMode((prevMode) => {
+      const nextMode = prevMode === 'light' ? 'dark': 'light'
+      setTheme(nextMode)
+      return nextMode}
+    )
   } 
 
   const theme = useMemo(() => createTheme(getDesignToken(mode)), [mode])

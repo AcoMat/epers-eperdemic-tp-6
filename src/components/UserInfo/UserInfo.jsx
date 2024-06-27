@@ -13,9 +13,11 @@ const UserInfo = ({ user, logout, signIn, onUserClick }) => {
       </>
     );
   } else {
-    <Button onClick={signIn} variant="contained">
-      Iniciar sesion
-    </Button>;
+    return (
+      <Button onClick={signIn} variant="contained">
+        Iniciar sesion
+      </Button>
+    );
   }
 };
 
