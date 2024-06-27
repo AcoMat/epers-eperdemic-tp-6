@@ -114,7 +114,7 @@ const MapComponent = memo(
         target: "map",
         view: new View({
           minZoom: 15,
-          maxZoom: 20,
+          maxZoom: 25,
           constrainResolution: true,
           center: fromLonLat([userLocation.longitude, userLocation.latitude]), // starting position [lng, lat]
           zoom: 18, // starting zoom
