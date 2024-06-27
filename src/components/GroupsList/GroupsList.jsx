@@ -6,7 +6,7 @@ const GroupList = ({ groups, onAddMemberToGroup }) => {
   const theme = useTheme()
 
   return (
-    <List style={{...groupListStyle, backgroundColor: theme.palette.background.default, flexGrow: 1 }}>
+    <List style={{...groupListStyle, backgroundColor: theme.palette.background.default, flexGrow: 2 }}>
       {groups.map(group => <Group key={group.name} group={group} onAddMemberToGroup={onAddMemberToGroup} />)}
     </List>
   ) 

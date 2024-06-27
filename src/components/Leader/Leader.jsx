@@ -5,7 +5,9 @@ import { Typography } from '@mui/material'
 const Leader = ({group, position, onAddMemberToGroup}) => {
   return (
     <div style={leaderContainerStyle}>
-        <Typography color={"background.onBackground"} variant='h5'>{`#${position}`}</Typography>
+        <div>
+          <Typography color={"background.onBackground"} variant='h5'>{`#${position}`}</Typography>
+        </div>
         <Group onAddMemberToGroup={onAddMemberToGroup} points={group.points} group={group} />
     </div>
   )

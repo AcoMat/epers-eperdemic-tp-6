@@ -5,7 +5,7 @@ import Leader from "../Leader/Leader";
 const Leaderboard = ({ groups, onAddMemberToGroup }) => {
   return (
     <Card style={leaderboardContainerStyle}>
-      <Typography color={"secondary"} variant="h3" align="center">
+      <Typography color={"background.onBackground"} variant="h3" align="center">
         Leaderboard
       </Typography>
       <List>
