@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import "./Group.css";
 import {
+  Avatar,
   IconButton,
   ListItem,
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
 import { GroupAddOutlined } from "@mui/icons-material";
+import { stringAvatar } from "../../utils/stringAvatar";
 
 const Group = ({ group, onAddMemberToGroup }) => {
-
+  const name = useMemo(() => {
+    return stringAvatar(group.name)
+  }, [group.name])
+  
     return (
       <ListItem
         style={{ ...cardStyle }}
@@ -19,10 +24,8 @@ const Group = ({ group, onAddMemberToGroup }) => {
           </IconButton>
         }
       >
-        <ListItemAvatar>
-          <p style={{ color: 'white' }}>{group.name}</p>
-        </ListItemAvatar>
-        <ListItemText primary={group.lider.displayName} />
+        <Avatar {...name} name />
+        <ListItemText primary={group.name} />
       </ListItem>
     );
   
