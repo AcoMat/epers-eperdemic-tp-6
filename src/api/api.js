@@ -61,28 +61,33 @@ const createUserIfNotInDatabase = async (user) => {
 
 const createGroup = async (groupName, user) => {
     const userRef = doc(databaseFirestore, "users", user.uid)
-    const groupRef = collection(databaseFirestore, "groups", groupName)
+    const groupRef = doc(databaseFirestore, "groups", groupName)
+    const alreadyExists = (await getDoc(groupRef)).exists()
+    if(alreadyExists) return;
     runTransaction(databaseFirestore, async (transaction) => {
-        const fetchedUser = (await transaction.get(userRef)).data()
-        if(fetchedUser.group) { await leaveActualUserGroup(transaction, userRef, fetchedUser.group) }
-        await setDoc(groupRef, {
+        if(user.group) {
+            await transaction.update(user.group, {
+                members: arrayRemove(userRef)
+            })
+        }
+        await transaction.set(groupRef, {
             name: groupName,
-            lider: userRef,
-            members: [userRef],
+            members: arrayUnion(userRef),
             points: 0
         })
-        await updateDoc(userRef, {
+        await transaction.update(userRef, {
             group: groupRef
         })
+        console.log("finalizado")
     })    
 }
 
 const leaveActualUserGroup = async (transaction, userRef, groupRef) => {
-    await transaction.update(userRef, {
-        group: null
-    })
     await transaction.update(groupRef, {
         members: arrayRemove(userRef)
+    })
+    await transaction.update(userRef, {
+        group: null
     })
 }
 
@@ -113,7 +118,6 @@ const leaveGroup = async (groupName, user) => {
     const groupRef = doc(databaseFirestore, "groups", groupName)
     runTransaction(databaseFirestore, async (transaction) => {
         const fetchedUser = (await transaction.get(userRef)).data()
-        console.log(fetchedUser)
         await transaction.update(groupRef, {
             members: arrayRemove(userRef)
         })

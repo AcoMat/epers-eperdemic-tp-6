@@ -26,12 +26,12 @@ const Group = ({ group, onAddMemberToGroup, points, onLeaveGroup, user }) => {
       style={cardStyle}
       secondaryAction={
         userInGroup ? 
-          <IconButton onClick={() => onLeaveGroup(group.name)}> 
+          (<IconButton onClick={() => onLeaveGroup(group.name)}> 
             <GroupRemoveOutlined /> 
-          </IconButton> :
-          <IconButton onClick={() => onAddMemberToGroup(group.name)}>
+          </IconButton>) :
+          (<IconButton onClick={() => onAddMemberToGroup(group.name)}>
             <GroupAddOutlined />
-          </IconButton> 
+          </IconButton>) 
       }
     >
       <ListItemAvatar>
