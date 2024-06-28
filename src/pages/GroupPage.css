@@ -1,0 +1,46 @@
+.group-page-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    padding: 32px;
+}
+
+.group-page-container > :last-child {
+    width: 40%;
+}
+
+.group-page-group-list-container {
+    width: 60%;
+    height: 100%;
+}
+
+.group-page-group-list-container-loader {
+    height: 100%;
+}
+
+@media only screen and (max-width: 1080px) {
+    .group-page-container {
+        display: block;
+        flex-direction: column;
+        min-height: 100%;
+        overflow-y: scroll;
+    }
+
+    .group-page-group-list-container {
+        height: 70%;
+        width: 100%;
+    }
+
+    .group-page-container > :last-child {
+        width: 100%;
+        overflow-y: auto;
+        margin-top: 16px;
+    }
+
+    .group-page-group-list-container-loader {
+        width: 100%;
+        height: 100%;
+    }
+}

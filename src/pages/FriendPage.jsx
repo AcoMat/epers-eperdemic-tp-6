@@ -23,7 +23,7 @@ const FriendPage = () => {
   return (
     <Background className='friend-page-container'>
       {
-        loading ? <Loading style={{width: "60%", height: "100%"}} />
+        loading ? <Loading className='friend-page-loader' />
         :
         <FriendsList
           friends={friends}
@@ -32,7 +32,6 @@ const FriendPage = () => {
       }
       
       <SearchUser
-        style={{ flexGrow: 1 }}
         onAddFriend={onAddFriend}
         friendsIds={friendsIds}
         onChange={changeSearch}
