@@ -28,9 +28,9 @@ const useScraps = () => {
         }
         try {
             await recolectScrapApi(coordinates, user)
-            notify("+10", notificationType.success)
+            notify("+10 😁", notificationType.success)
         } catch(e) {
-            notify(":(", notificationType.error)
+            notify("😢", notificationType.error)
         }
     }
 

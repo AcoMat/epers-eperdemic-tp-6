@@ -10,7 +10,7 @@ const useFriends = () => {
     const { user } = useContext(AuthContext)
     const [friends, setFriends] = useState([])
     const [loading, setLoading] = useState(true)
-    const { notify } = useContext(DialogContext)
+    const { notify, close } = useContext(DialogContext)
     
     const changeUser = (user) => {
         setLoading(false)
@@ -34,6 +34,7 @@ const useFriends = () => {
 
     const onRemoveFriend = async (friend) => {
         if(!user) return;
+        const loader = notify("Cargando...", notificationType.loading)
         try {
             const friendRef = doc(databaseFirestore, "users", friend.uid)
             const userRef = doc(databaseFirestore, "users", user.uid)
@@ -43,11 +44,14 @@ const useFriends = () => {
             notify("Amigo eliminado exitosamente", notificationType.success)
         } catch(e) {
             notify("Ocurrió un error eliminando a un amigo", notificationType.error)
+        } finally {
+            close(loader)
         }
     }
 
     const onAddFriend = async (userToAdd) => {
         if(!user) return;
+        const loader = notify("Cargando...", notificationType.loading)
         try {
             const userToAddRef = doc(databaseFirestore, "users", userToAdd.uid)
             const userRef = doc(databaseFirestore, "users", user.uid)
@@ -57,6 +61,8 @@ const useFriends = () => {
             notify("Amigo agregado exitosamente", notificationType.success)
         } catch(e) {
             notify("Ocurrió un error agregando a un amigo", notificationType.error)
+        } finally {
+            close(loader)
         }
     }
 
