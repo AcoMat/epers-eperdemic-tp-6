@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import MapPage from '../pages/MapPage'
 import FriendPage from '../pages/FriendPage'
 import GroupPage from '../pages/GroupPage'
@@ -10,6 +10,7 @@ const AppRoutes = () => {
         <Route path='/' element={<MapPage />} />
         <Route path='/friends' element={<FriendPage />} />
         <Route path='/groups' element={<GroupPage />} />
+        <Route path='*' element={<Navigate to='/' />} />
     </Routes>
   )
 }
