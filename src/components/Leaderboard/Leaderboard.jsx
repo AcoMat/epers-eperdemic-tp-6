@@ -31,8 +31,6 @@ const leaderboardContainerStyle = {
   paddingRight: 16,
   paddingTop: 16,
   paddingBottom: 16,
-  width: "40%",
-  overflowY: "scroll",
 };
 
 export default Leaderboard;

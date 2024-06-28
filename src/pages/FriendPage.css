@@ -23,11 +23,12 @@
     .friend-page-container > :first-child {
         width: 100%;
         order: 2;
+        height: 50%;
     }
 
     .friend-page-container > :last-child {
         width: 100%;
-        min-height: 50%;
+        height: 50%;
     }
     
 }

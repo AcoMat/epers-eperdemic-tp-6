@@ -2,9 +2,9 @@ import React from 'react'
 import { Background } from '../Background/Background'
 import { CircularProgress } from '@mui/material'
 
-const Loading = React.forwardRef(({style}, ref) => {
+const Loading = React.forwardRef(({style, className}, ref) => {
     return (
-      <div style={{...containerFullWidthStyle, ...style}} ref={ref}>
+      <div className={className} style={{...containerFullWidthStyle, ...style}} ref={ref}>
         <Background style={backgroundStyle}>
             <CircularProgress color='primary' />
         </Background>

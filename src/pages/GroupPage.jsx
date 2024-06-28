@@ -9,6 +9,7 @@ import Leaderboard from "../components/Leaderboard/Leaderboard";
 import useLeaderboard from "../hooks/useLeaderboard";
 import { DialogContext } from "../dialogs/DialogContextProvider";
 import Loading from "../components/Loading/Loading";
+import './GroupPage.css'
 
 const GroupPage = () => {
   const { user } = useContext(AuthContext);
@@ -17,7 +18,7 @@ const GroupPage = () => {
   const { showCreateGroup, showGroupWithId } = useContext(DialogContext);
 
   return (
-    <Background style={backgroundStyle}>
+    <Background className="group-page-container">
       <Fab
         color="primary"
         style={{
@@ -34,17 +35,16 @@ const GroupPage = () => {
       </Fab>
       {
         loading ?
-          <Loading style={{width: "60%", height: "100%"}} />
+          <Loading className="group-page-group-list-container-loader" />
           : 
-        <section style={{ width: "60%", height: "100%" }}>
-          <GroupList
-            groups={groups}
-            onGroupPress={showGroupWithId}
-            onAddMemberToGroup={onAddMemberToGroup}
-            onLeaveGroup={onLeaveGroup}
-            user={user}
-          />
-        </section>
+        <GroupList
+          className='group-page-group-list-container'
+          groups={groups}
+          onGroupPress={showGroupWithId}
+          onAddMemberToGroup={onAddMemberToGroup}
+          onLeaveGroup={onLeaveGroup}
+          user={user}
+        />
       }
       <Leaderboard
         onGroupPress={showGroupWithId}
@@ -55,16 +55,6 @@ const GroupPage = () => {
       />
     </Background>
   );
-};
-
-const backgroundStyle = {
-  height: "100%",
-  width: "100%",
-  display: "flex",
-  flexDirection: "row",
-  gap: 16,
-  padding: 32,
-  boxSizing: "border-box",
 };
 
 export default GroupPage;

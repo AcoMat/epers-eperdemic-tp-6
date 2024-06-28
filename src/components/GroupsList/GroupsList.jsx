@@ -2,15 +2,15 @@ import { useTheme } from "@emotion/react";
 import { List } from "@mui/material";
 import Group from "../Group/Group";
 
-const GroupList = ({ groups, onAddMemberToGroup, onLeaveGroup, user, onGroupPress }) => {
+const GroupList = ({ className, groups, onAddMemberToGroup, onLeaveGroup, user, onGroupPress }) => {
   const theme = useTheme();
 
   return (
     <List
+      className={className}
       style={{
         ...groupListStyle,
-        backgroundColor: theme.palette.background.default,
-        flexGrow: 2,
+        backgroundColor: theme.palette.background.default
       }}
     >
       {groups.map((group) => (
@@ -28,8 +28,6 @@ const GroupList = ({ groups, onAddMemberToGroup, onLeaveGroup, user, onGroupPres
 };
 
 const groupListStyle = {
-  height: "100%",
-  width: "auto",
   overflowY: "scroll",
 };
 
