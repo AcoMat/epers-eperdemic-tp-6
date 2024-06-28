@@ -36,6 +36,7 @@
     .group-page-container > :last-child {
         width: 100%;
         overflow-y: auto;
+        margin-top: 16px;
     }
 
     .group-page-group-list-container-loader {

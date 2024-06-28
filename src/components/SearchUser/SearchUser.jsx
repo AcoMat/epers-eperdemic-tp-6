@@ -28,7 +28,6 @@ const searchContainerStyle = {
   flexDirection: "column",
   maxHeight: "70%",
   padding: 16,
-  width: "auto",
   gap: 16,
   overflowY: "hidden"
 }
