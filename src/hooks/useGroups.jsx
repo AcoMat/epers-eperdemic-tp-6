@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { arrayRemove, arrayUnion, collection, doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, doc, onSnapshot, orderBy, query, setDoc, updateDoc } from 'firebase/firestore';
 import { AuthContext } from '../auth/AuthContextProvider';
 import { databaseFirestore } from '../configs/firebase';
 import { joinGroup, leaveGroup } from '../api/api';
@@ -25,7 +25,9 @@ const useGroups = () => {
     }
     
     const getGroups = () => {
-        const unsubscribe = onSnapshot(collection(databaseFirestore, "groups"), (snapshot) => {
+        const groupsRef = collection(databaseFirestore, "groups")
+        const q = query(groupsRef, orderBy("name", 'asc'))
+        const unsubscribe = onSnapshot(q, (snapshot) => {
             const groups = []
             snapshot.docs.forEach((doc) => {
                 groups.push(doc.data());
