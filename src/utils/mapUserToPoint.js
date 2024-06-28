@@ -3,14 +3,15 @@ import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj";
 import { styles } from "./mapItemsStyles";
 
-const mapUserToPoint = (user) => {
+const mapUserToPoint = (userLocation, isUserInfectado) => {
+  const { longitude, latitude } = userLocation
   const feature = new Feature({
     geometry: new Point(
-      fromLonLat([user.longitude, user.latitude])
+      fromLonLat([longitude, latitude])
     ),
     name: "User",
   });
-  feature.setStyle(styles.userStyle(user))
+  feature.setStyle(styles.userStyle(isUserInfectado))
   return feature
 };
 

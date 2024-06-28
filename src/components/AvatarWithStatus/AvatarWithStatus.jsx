@@ -4,8 +4,8 @@ import UserStatus from '../UserStatus/UserStatus'
 
 const AvatarWithStatus = ({avatarStyle, user, onClick, selectable = true}) => {
   const estado = () => {
-    if(user.estaInfectado === null) return "Cargando..."
-    if(user.estaInfectado) return "Infectado"
+    if(user.estaInfectado === null || user.estaInfectado === undefined) return "Cargando..."
+    if(user?.estaInfectado) return "Infectado"
     return "Sano"
   }
   return (

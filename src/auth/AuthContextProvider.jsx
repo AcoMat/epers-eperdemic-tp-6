@@ -4,6 +4,7 @@ import { auth, databaseFirestore, provider } from "../configs/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { doc, getDoc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import { createUserIfNotInDatabase, createVector } from "../api/api";
+import { estaInfectadoConCache } from "./estaInfectadoConCache";
 
 const AuthContext = createContext();
 const loadingFirestoreUser = {isLoading: true, firestoreUser: undefined}
@@ -22,6 +23,20 @@ const AuthContextProvider = ({ children }) => {
     setFirestoreUserId({isLoading: false, id: user?.uid});
   }
 
+  const renewUserInfectionState = async() => {
+    try {
+      const infectado = await estaInfectadoConCache(firestoreUser.firestoreUser.vectorId)
+      console.log("reset estado user")
+      setFirestoreUser(user => {
+        return user.firestoreUser === null 
+                ? user 
+                : ({...user, firestoreUser: {...user.firestoreUser, estaInfectado: infectado}})
+      })
+    } catch(e) {
+      console.log("Error renovando estado de usuario")
+    }
+  }
+
   useEffect(() => {
     if (loading) {
       return setFirestoreUserId(loadingFirestoreUserId)
@@ -32,6 +47,14 @@ const AuthContextProvider = ({ children }) => {
       setFirestoreUserId(notLoggedInFirestoreUserId)
     }
   }, [user, loading]);
+
+  useEffect(() => {
+    if(firestoreUser.firestoreUser === null) return;
+    const renewInfectionState = setInterval(() => {
+      renewUserInfectionState()
+    }, [10000])
+    return () => clearInterval(renewInfectionState)
+  }, [firestoreUser?.firestoreUser?.vectorId])
 
   useEffect(() => {
     if(firestoreUserId.isLoading) return setFirestoreUser(loadingFirestoreUser);
