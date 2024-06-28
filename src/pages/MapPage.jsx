@@ -1,12 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import MapComponent from '../components/MapComponents/MapComponent';
 import { getMapItems } from '../api/api';
 import useLocation from '../hooks/useLocation';
 import GeolocationDenied from '../pages/GeolocationDenied'
 import Loading from '../components/Loading/Loading';
 import useFriends from '../hooks/useFriends'
+import useScraps from '../hooks/useScraps';
+import { AuthContext } from '../auth/AuthContextProvider';
 
 const MapPage = () => {
+    const { user } = useContext(AuthContext)
     const { location, isLocationEnabled, isLoading } = useLocation();
     const [radiusInMeters, setRadiusInMeters] = useState(0);
     const [viewingLocationCenter, setViewingLocationCenter] = useState({longitude: 0, latitude: 0})
@@ -14,6 +17,7 @@ const MapPage = () => {
     const {locations, districts} = mapItems
     const { friends } = useFriends()
     const friendsWithLocation = friends.filter(friend => !!friend.location)
+    const { scraps, recolectScrap } = useScraps() 
 
     useEffect(() => {
       if (isLocationEnabled) {
@@ -21,6 +25,10 @@ const MapPage = () => {
       }
     }, [isLocationEnabled, radiusInMeters, viewingLocationCenter])
   
+    const onScrapPress = (coordinate) => {
+      recolectScrap(coordinate, user)
+    }
+
     const optimizedSetRadiusInMeters = useCallback((radius) => {
       setRadiusInMeters(radius)
     }, [])
@@ -59,6 +67,8 @@ const MapPage = () => {
       onRadiusChange={optimizedSetRadiusInMeters} 
       userLocation ={location}
       friends={friendsWithLocation}
+      scraps={scraps}
+      onScrapPress={onScrapPress}
     />
   )
 }

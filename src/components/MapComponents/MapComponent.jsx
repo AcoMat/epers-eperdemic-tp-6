@@ -14,6 +14,7 @@ import mapUserToPoint from "../../utils/mapUserToPoint";
 import { Fab } from "@mui/material";
 import { AdjustRounded } from "@mui/icons-material";
 import mapFriendsToPoints from "../../utils/mapFriendsToPoints";
+import mapScrapToPoints from "../../utils/mapScrapToPoints";
 
 const arePropsEquals = (oldProps, newProps) => {
   return (
@@ -33,7 +34,9 @@ const MapComponent = memo(
     userLocation,
     onRadiusChange,
     onLocationChanged,
-    friends
+    friends,
+    scraps,
+    onScrapPress
   }) => {
     const mapRef = useRef(null);
     const goCenter = useRef(null);
@@ -76,17 +79,26 @@ const MapComponent = memo(
       setRadius(metersPerPixel * 10);
     }, []);
 
+    const processClick = useCallback((event, map) => {
+      map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
+        if(feature.values_.name === "scrap") {
+          onScrapPress(feature.values_.id)
+        }
+      })
+    }, [])
+
     const goToUser = () => {
       goCenter.current(userLocation)
     }
 
     useEffect(() => {
+      const scrapPoints = mapScrapToPoints(scraps);
       const userPoint = mapUserToPoint(userLocation);
       const locationPoints = mapLocationToPoints(locations);
       const districtPoints = mapDistrictToPoints(districts);
 
       const vectorSource = new VectorSource({
-        features: [userPoint, ...locationPoints, ...districtPoints],
+        features: [userPoint, ...scrapPoints, ...locationPoints, ...districtPoints],
       });
 
       const vectorLayer = new VectorLayer({
@@ -127,6 +139,9 @@ const MapComponent = memo(
       map.getView().on("change:center", (event) => {
         changeCentralPosition(map);
       });
+      map.on('click', (event) => {
+        processClick(event, map)
+      })
       goCenter.current = ({ longitude, latitude }) => {
         map.getView().setCenter(fromLonLat([longitude, latitude]));
       };
@@ -140,6 +155,7 @@ const MapComponent = memo(
       return () => {
         map.getView().on("change:resolution", null);
         map.getView().on("change:center", null);
+        map.on('click', null);
         map.setTarget(null);
         goCenter.current = null;
         goTo.current = null;
@@ -150,12 +166,13 @@ const MapComponent = memo(
     useEffect(() => {
       const features = [
         mapUserToPoint(userLocation),
+        ...mapScrapToPoints(scraps),
         ...mapLocationToPoints(locations),
         ...mapDistrictToPoints(districts),
         ...mapFriendsToPoints(friends)
       ];
       reloadFeatures.current(features);
-    }, [userLocation, districts, locations, friends]);
+    }, [userLocation, districts, locations, friends, scraps]);
 
     useEffect(() => {
       goCenter.current(userLocation);

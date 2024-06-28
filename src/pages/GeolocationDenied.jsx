@@ -9,7 +9,6 @@ const GeolocationDenied = () => {
     const theme = useTheme()
 
     const showPosition = (position) => {
-        console.log(position);
         // Reload the window to fetch updated location
         window.location.reload();
     };

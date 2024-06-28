@@ -48,7 +48,6 @@ const AuthContextProvider = ({ children }) => {
   const signIn = async () => {
     try {
       const sign = await signInWithPopup(auth, provider);
-      console.log(sign)
     } catch (error) {
       logout();
     }
