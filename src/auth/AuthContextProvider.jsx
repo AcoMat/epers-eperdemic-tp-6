@@ -26,9 +26,9 @@ const AuthContextProvider = ({ children }) => {
   const renewUserInfectionState = async() => {
     try {
       const infectado = await estaInfectadoConCache(firestoreUser.firestoreUser.vectorId)
-      console.log("reset estado user")
+      console.log("reset estado user", infectado)
       setFirestoreUser(user => {
-        return user.firestoreUser === null 
+        return user.firestoreUser === undefined 
                 ? user 
                 : ({...user, firestoreUser: {...user.firestoreUser, estaInfectado: infectado}})
       })
@@ -49,7 +49,7 @@ const AuthContextProvider = ({ children }) => {
   }, [user, loading]);
 
   useEffect(() => {
-    if(firestoreUser.firestoreUser === null) return;
+    if(firestoreUser.firestoreUser === undefined) return;
     const renewInfectionState = setInterval(() => {
       renewUserInfectionState()
     }, [10000])

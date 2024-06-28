@@ -5,7 +5,7 @@ const UserStatus = ({user}) => {
     const color = () => {
         if(user.estaInfectado === null || user.estaInfectado === undefined) { return "grey"}
         else if(user.estaInfectado) { return "#800000" }
-        else return "green"
+        else return "#008000"
     }
 
   return (
