@@ -77,6 +77,7 @@ const useFriends = () => {
                 setEstaInfectado(doc.data().vectorId, id)
             })
         })
+        if(user?.friendsIds?.length === 0) { setLoading(false) }
         return () => { callbacks.forEach(callback => callback()) } 
     }, [user])
 

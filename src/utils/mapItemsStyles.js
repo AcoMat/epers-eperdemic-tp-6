@@ -52,11 +52,11 @@ export const styles = {
           });
         return style
     },
-    userStyle: (user) => {
+    userStyle: (isUserInfectado) => {
         let color;
-        if(user.estaInfectado === null) {
+        if(isUserInfectado === null || isUserInfectado === undefined) {
             color = grey
-        } else if(user.estaInfectado) {
+        } else if(isUserInfectado) {
             color = red
         } else {
             color = green

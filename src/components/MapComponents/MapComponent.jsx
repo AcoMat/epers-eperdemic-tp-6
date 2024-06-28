@@ -31,6 +31,7 @@ const arePropsEquals = (oldProps, newProps) => {
 
 const MapComponent = memo(
   ({
+    isUserInfectado,
     locations,
     districts,
     userLocation,
@@ -95,7 +96,7 @@ const MapComponent = memo(
 
     useEffect(() => {
       const scrapPoints = mapScrapToPoints(scraps);
-      const userPoint = mapUserToPoint(userLocation);
+      const userPoint = mapUserToPoint(userLocation, isUserInfectado);
       const locationPoints = mapLocationToPoints(locations);
       const districtPoints = mapDistrictToPoints(districts);
 
@@ -167,14 +168,14 @@ const MapComponent = memo(
 
     useEffect(() => {
       const features = [
-        mapUserToPoint(userLocation),
+        mapUserToPoint(userLocation, isUserInfectado),
         ...mapScrapToPoints(scraps),
         ...mapLocationToPoints(locations),
         ...mapDistrictToPoints(districts),
         ...mapFriendsToPoints(friends)
       ];
       reloadFeatures.current(features);
-    }, [userLocation, districts, locations, friends, scraps]);
+    }, [userLocation, districts, locations, friends, scraps, isUserInfectado]);
 
     useEffect(() => {
       goCenter.current(userLocation);

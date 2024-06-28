@@ -19,7 +19,8 @@ function stringToColor(string) {
   }
   
 function stringAvatar(name) {
-    const result = name.split(' ').map(word => word[0].toUpperCase()).join("").substring(0, 3)
+    const resultWithoutSpaces = name.trim().replace( /\s\s+/g, ' ' )
+    const result = resultWithoutSpaces.split(' ').map(word => word[0].toUpperCase()).join("").substring(0, 3)
     return {
         sx: {
             bgcolor: stringToColor(name),

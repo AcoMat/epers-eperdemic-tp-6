@@ -19,8 +19,6 @@ const MapPage = () => {
     const friendsWithLocation = friends.filter(friend => !!friend.location)
     const { scraps, recolectScrap } = useScraps() 
 
-    console.log(scraps)
-
     useEffect(() => {
       if (isLocationEnabled) {
         fetchMapItems();
@@ -38,10 +36,6 @@ const MapPage = () => {
     const optimizedLocationChanged = useCallback((newLocation) => {
       setViewingLocationCenter(newLocation)
     }, [])
-  
-    useEffect(() => {
-      fetchMapItems()
-    }, [radiusInMeters, viewingLocationCenter])
   
     const fetchMapItems = async () => {
       try {
@@ -63,6 +57,7 @@ const MapPage = () => {
 
   return ( 
     <MapComponent 
+      isUserInfectado={user?.estaInfectado}
       districts={districts} 
       locations={locations} 
       onLocationChanged={optimizedLocationChanged} 
