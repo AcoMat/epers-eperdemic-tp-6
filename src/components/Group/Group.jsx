@@ -10,7 +10,7 @@ import {
 import { GroupAddOutlined, GroupRemoveOutlined } from "@mui/icons-material";
 import { stringAvatar } from "../../utils/stringAvatar";
 
-const Group = ({ group, onAddMemberToGroup, points, onLeaveGroup, user }) => {
+const Group = ({ group, onAddMemberToGroup, points, onLeaveGroup, user, onGroupPress }) => {
   const name = useMemo(() => {
     return stringAvatar(group.name);
   }, [group.name]);
@@ -20,6 +20,10 @@ const Group = ({ group, onAddMemberToGroup, points, onLeaveGroup, user }) => {
     const id = path[path.length - 1]
     return id === user.uid
   })
+
+  const groupPressed = () => {
+    onGroupPress(group.name)
+  }
 
   return (
     <ListItem
@@ -35,7 +39,7 @@ const Group = ({ group, onAddMemberToGroup, points, onLeaveGroup, user }) => {
       }
     >
       <ListItemAvatar>
-        <Avatar style={{ height: 56, width: 56 }} {...name} name />
+        <Avatar onClick={groupPressed} style={{ height: 56, width: 56, cursor: 'pointer' }} {...name} name />
       </ListItemAvatar>
       {
         points !== undefined ?

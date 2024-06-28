@@ -2,7 +2,7 @@ import { Card, List, Typography, hexToRgb } from "@mui/material";
 import React from "react";
 import Leader from "../Leader/Leader";
 
-const Leaderboard = ({ groups, onLeaveGroup, onAddMemberToGroup, user }) => {
+const Leaderboard = ({ groups, onLeaveGroup, onAddMemberToGroup, user, onGroupPress }) => {
   return (
     <Card style={leaderboardContainerStyle}>
       <Typography color={"background.onBackground"} variant="h3" align="center">
@@ -12,6 +12,7 @@ const Leaderboard = ({ groups, onLeaveGroup, onAddMemberToGroup, user }) => {
         {groups &&
           groups.map((group, position) => (
             <Leader
+              onGroupPress={onGroupPress}
               key={group.name}
               onAddMemberToGroup={onAddMemberToGroup}
               onLeaveGroup={onLeaveGroup}

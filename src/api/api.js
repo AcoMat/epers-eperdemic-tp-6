@@ -153,4 +153,15 @@ const recolectScrap = async (coordRef, user) => {
     })
 }
 
-export {recolectScrap, leaveGroup, joinGroup, getUser, getMapItems, createVector, getVector, isInfectado, createUserIfNotInDatabase, createGroup }
+const fetchEntireGroup = async (groupId) => {
+    const groupRef = doc(databaseFirestore, "groups", groupId);
+    const group = (await getDoc(groupRef)).data()
+    const membersRefs = group.members.map(member => getDoc(member))
+    const users = (await Promise.all(membersRefs)).map(user => user.data())
+    return {
+        ...group,
+        users: users
+    }
+}
+
+export {fetchEntireGroup, recolectScrap, leaveGroup, joinGroup, getUser, getMapItems, createVector, getVector, isInfectado, createUserIfNotInDatabase, createGroup }

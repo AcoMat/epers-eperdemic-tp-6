@@ -2,7 +2,7 @@ import React from "react";
 import Group from "../Group/Group";
 import { Typography } from "@mui/material";
 
-const Leader = ({ group, position, onLeaveGroup, onAddMemberToGroup, user }) => {
+const Leader = ({ group, position, onLeaveGroup, onAddMemberToGroup, user, onGroupPress }) => {
   return (
     <div style={leaderContainerStyle}>
       <div>
@@ -12,6 +12,7 @@ const Leader = ({ group, position, onLeaveGroup, onAddMemberToGroup, user }) => 
         >{`#${position}`}</Typography>
       </div>
       <Group
+        onGroupPress={onGroupPress}
         onAddMemberToGroup={onAddMemberToGroup}
         onLeaveGroup={onLeaveGroup}
         points={group.points}
