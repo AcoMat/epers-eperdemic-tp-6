@@ -1,14 +1,17 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { AuthContext } from '../auth/AuthContextProvider';
 import { databaseFirestore } from '../configs/firebase';
 import { estaInfectadoConCache } from '../auth/estaInfectadoConCache';
+import { DialogContext } from '../dialogs/DialogContextProvider';
+import { notificationType } from '../dialogs/toastType';
 
 const useFriends = () => {
     const { user } = useContext(AuthContext)
     const [friends, setFriends] = useState([])
     const [loading, setLoading] = useState(true)
-
+    const { notify } = useContext(DialogContext)
+    
     const changeUser = (user) => {
         setLoading(false)
         setFriends(friends => {
@@ -31,20 +34,30 @@ const useFriends = () => {
 
     const onRemoveFriend = async (friend) => {
         if(!user) return;
-        const friendRef = doc(databaseFirestore, "users", friend.uid)
-        const userRef = doc(databaseFirestore, "users", user.uid)
-        await updateDoc(userRef, {
-            friendsIds: arrayRemove(friendRef)
-        })
+        try {
+            const friendRef = doc(databaseFirestore, "users", friend.uid)
+            const userRef = doc(databaseFirestore, "users", user.uid)
+            await updateDoc(userRef, {
+                friendsIds: arrayRemove(friendRef)
+            })
+            notify("Amigo eliminado exitosamente", notificationType.success)
+        } catch(e) {
+            notify("Ocurrió un error eliminando a un amigo", notificationType.error)
+        }
     }
 
     const onAddFriend = async (userToAdd) => {
         if(!user) return;
-        const userToAddRef = doc(databaseFirestore, "users", userToAdd.uid)
-        const userRef = doc(databaseFirestore, "users", user.uid)
-        await updateDoc(userRef, {
-            friendsIds: arrayUnion(userToAddRef)
-        })
+        try {
+            const userToAddRef = doc(databaseFirestore, "users", userToAdd.uid)
+            const userRef = doc(databaseFirestore, "users", user.uid)
+            await updateDoc(userRef, {
+                friendsIds: arrayUnion(userToAddRef)
+            })
+            notify("Amigo agregado exitosamente", notificationType.success)
+        } catch(e) {
+            notify("Ocurrió un error agregando a un amigo", notificationType.error)
+        }
     }
 
     useEffect(() => {
@@ -62,13 +75,15 @@ const useFriends = () => {
     }, [user])
 
     const setEstaInfectado = async (vectorId, friendUid) => {
-        const estaInfectado = await estaInfectadoConCache(vectorId)
-        setFriends(friends => {
-            const mappedFriends = friends.map(friend => {
-                return friend.uid === friendUid ? {...friend, estaInfectado: estaInfectado} : friend
+        try {
+            const estaInfectado = await estaInfectadoConCache(vectorId)
+            setFriends(friends => {
+                const mappedFriends = friends.map(friend => {
+                    return friend.uid === friendUid ? {...friend, estaInfectado: estaInfectado} : friend
+                })
+                return mappedFriends
             })
-            return mappedFriends
-        })
+        } catch(e) { console.log("Error recuperando estado infectado") }
     }
 
     return (
