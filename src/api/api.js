@@ -135,14 +135,14 @@ const recolectScrap = async (coordRef, user) => {
     const userRef = doc(databaseFirestore, "users", user.uid)
     runTransaction(databaseFirestore, async (transaction) => {
         const coordinate = (await transaction.get(coordRef));
-        const user = (await getDoc(userRef)).data() 
+        const user = (await transaction.get(userRef)).data() 
         const userGroupRef = user.group
         const group = (await transaction.get(userGroupRef));
 
         if(!coordinate.exists()) { return }
         if(!group.exists()) { return }
-        await deleteDoc(coordRef)
-        await updateDoc(userGroupRef, {
+        await transaction.delete(coordRef)
+        await transaction.update(userGroupRef, {
             points: increment(10)
         })
     })

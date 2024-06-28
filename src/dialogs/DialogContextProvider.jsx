@@ -14,7 +14,9 @@ const DialogContextProvider = ({children}) => {
   const notify = (message, type) => { return type(message) }
 
   const close = (id) => {
-    toast.dismiss({id: id})
+    setInterval(() => {
+      toast.dismiss({id: id})
+    }, [400])
   }
 
   const showUserProfile = (uid) => {
