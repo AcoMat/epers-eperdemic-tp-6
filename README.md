@@ -37,9 +37,12 @@ Están al tanto de que tengo un amplio conocimiento sobre patógenos, especies y
 
 ## Objetivos
 Firebase quiere visualizar los movimientos de sus soldados y distintos datos relevantes a la causa. Para ello tenemos que cumplir con los siguientes objetivos:
-- Iniciar sesión en una página de la resistencia, dónde podrás ver tu ubicación en el mapa
-- Agregar a otros miembros de Firebase a tu red de contactos para ver sus ubicaciones
-- Unirse a un **grupo** específico. Deberá mostrarse un ranking de los grupos con más integrantes para conocer quiénes lograron más adhesiones a la causa
+- Realizar una aplicación Web, que relacione vectores de la api con usuarios y los persista en la base de datos Firestore configurada desde el Frontend.
+- Poder iniciar y cerrar sesión en la aplicación usando la autenticación por Google.
+- Ver tu estado y ubicación actual en un mapa, como también los distritos existentes.
+- Agregar/Eliminar a otros usuarios a tu red de contactos para ver sus ubicaciones y su estado de infección. Los miembros agregados se deberan persistir y reaccionar a este cambio en la pantalla y en el mapa.
+- Crear un **grupo** nuevo y automáticamente pertenecer a ese grupo. Dicho cambio también debera verse reflejado en la pantalla.
+- Poder unirte a un grupo ya existente (si ya estabas en un grupo, deberás irte primero de este).
 
 <p align="center">
   <img src="imagenes/mapa.png" />
