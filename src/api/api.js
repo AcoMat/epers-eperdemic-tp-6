@@ -31,8 +31,12 @@ const getVector = async ({vectorId}) => {
 }
 
 const isInfectado = async (vectorId) => {
-    const response = await axios.get(url + `/vector/${vectorId}/estaInfectado`)
-    return response.data
+    const response = await axios.get(url + `/vector/${vectorId}/estaInfectado`, {
+        headers: {
+            'ngrok-skip-browser-warning': 'true',
+        }
+    });
+    return response.data;
 }
 
 const getUser = async (uid) => {
