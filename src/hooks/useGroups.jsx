@@ -13,14 +13,15 @@ const useGroups = () => {
     const { notify, close } = useContext(DialogContext)
 
     const onAddMemberToGroup = async (groupName) => {
+        const loading = notify("Cargando...", notificationType.loading)
         try {
-
+            await joinGroup(groupName, user)
+            notify("Te uniste exitosamente al grupo", notificationType.success)
         } catch(e) {
-            
+            notify("Ha ocurrido un error uniéndote al grupo", notificationType.error)
         } finally {
-            
+            close(loading)
         }
-        await joinGroup(groupName, user)
     }
     
     const getGroups = () => {
