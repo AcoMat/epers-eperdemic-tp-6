@@ -30,6 +30,7 @@ const useGroups = () => {
             snapshot.docs.forEach((doc) => {
                 groups.push(doc.data());
             });
+            setLoading(false)
             setGroups(groups)
         });
 
@@ -54,7 +55,7 @@ const useGroups = () => {
     }, [user])
 
     return (
-        { onAddMemberToGroup, groups, onLeaveGroup }
+        { onAddMemberToGroup, groups, onLeaveGroup, loading }
     )
 }
 
