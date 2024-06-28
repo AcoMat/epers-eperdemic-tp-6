@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 import { useMemo, useState } from 'react';
 import getDesignToken from './utils/theme';
-import { Dialog, createTheme } from '@mui/material';
+import { createTheme } from '@mui/material';
 import AuthContextProvider from './auth/AuthContextProvider';
 import ColorModeContext from './theme/ColorModeContext'
 import DialogContextProvider from './dialogs/DialogContextProvider';

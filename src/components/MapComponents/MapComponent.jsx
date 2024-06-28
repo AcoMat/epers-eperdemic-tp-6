@@ -23,7 +23,9 @@ const arePropsEquals = (oldProps, newProps) => {
     oldProps.onRadiusChange === newProps.onRadiusChange &&
     oldProps.onLocationChanged === newProps.onLocationChanged &&
     oldProps.locations === newProps.location &&
-    oldProps.districts === newProps.district
+    oldProps.districts === newProps.district &&
+    oldProps.scraps === newProps.scraps &&
+    oldProps.onScrapPress === newProps.onScrapPress
   );
 };
 

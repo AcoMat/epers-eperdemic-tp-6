@@ -3,14 +3,25 @@ import { arrayRemove, arrayUnion, collection, doc, onSnapshot, setDoc, updateDoc
 import { AuthContext } from '../auth/AuthContextProvider';
 import { databaseFirestore } from '../configs/firebase';
 import { joinGroup, leaveGroup } from '../api/api';
+import { notificationType } from '../dialogs/toastType';
+import { DialogContext } from '../dialogs/DialogContextProvider';
 
 const useGroups = () => {
     const { user } = useContext(AuthContext)
     const [groups, setGroups] = useState([])
     const [loading, setLoading] = useState(true)
+    const { notify, close } = useContext(DialogContext)
 
     const onAddMemberToGroup = async (groupName) => {
-        await joinGroup(groupName, user)
+        const loading = notify("Cargando...", notificationType.loading)
+        try {
+            await joinGroup(groupName, user)
+            notify("Te uniste exitosamente al grupo", notificationType.success)
+        } catch(e) {
+            notify("Ha ocurrido un error uniéndote al grupo", notificationType.error)
+        } finally {
+            close(loading)
+        }
     }
     
     const getGroups = () => {
@@ -26,7 +37,15 @@ const useGroups = () => {
     }
 
     const onLeaveGroup = async (groupName) => {
-        await leaveGroup(groupName, user)
+        const loader = notify("Cargando...", notificationType.loading)
+        try {
+            await leaveGroup(groupName, user)
+            notify("Has salido exitosamente de " + groupName, notificationType.success)
+        } catch(e) {
+            notify("Has ocurrido un problema saliendo de " + groupName, notificationType.error)
+        } finally {
+            close(loader)
+        }
     }
 
     useEffect(() => {

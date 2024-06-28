@@ -1,12 +1,15 @@
 import { Avatar, Button, Card, Modal, OutlinedInput } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { stringAvatar } from "../utils/stringAvatar";
 import { createGroup as createGroupApi } from '../api/api'
+import { DialogContext } from "./DialogContextProvider";
+import { notificationType } from "./toastType";
 
 const CreateGroupDialog = ({ show, onClose, user }) => {
     const [name, setName] = useState("")
     const createActive = name.trim().length >= 5
-
+    const { notify, close } = useContext(DialogContext)
+    
     const avatarProps = useMemo(() => {
         if(name.trim() === "") return {}
         return stringAvatar(name.trim())
@@ -17,8 +20,16 @@ const CreateGroupDialog = ({ show, onClose, user }) => {
     }
 
     const createGroup = async () => {
+      const loading = notify("Cargando...", notificationType.loading)
+      try {
         await createGroupApi(name.trim(), user)
         onClose()
+        notify("Grupo creado exitosamente", notificationType.success)
+      } catch(e) {
+        notify("Ha ocurrido un error creando el grupo", notificationType.error)
+      } finally {
+        close(loading)
+      }
     }
 
     useEffect(() => {

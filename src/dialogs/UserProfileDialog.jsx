@@ -1,5 +1,5 @@
 import { Box, Card, Modal, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { getUser } from "../api/api";
 import AvatarWithStatus from "../components/AvatarWithStatus/AvatarWithStatus";
 import Loading from "../components/Loading/Loading";
@@ -11,6 +11,8 @@ import {
   ReportProblemOutlined,
 } from "@mui/icons-material";
 import { useTheme } from "@emotion/react";
+import { DialogContext } from "./DialogContextProvider";
+import { notificationType } from "./toastType";
 
 const loadingUserData = { isLoading: true, user: null };
 const errorUserData = { isLoading: false, user: null };
@@ -18,6 +20,7 @@ const errorUserData = { isLoading: false, user: null };
 const UserProfileDialog = ({ uid, show, onClose }) => {
   const [userData, setUserData] = useState(loadingUserData);
   const { isLoading, user } = userData;
+  const { notify, close } = useContext(DialogContext)
   const ubicacion = user?.location
     ? `Longitud: ${user.location.longitude}, Latitud: ${user.location.latitude}`
     : "No definida";
@@ -35,8 +38,14 @@ const UserProfileDialog = ({ uid, show, onClose }) => {
   }, [show, uid]);
 
   const fetchUser = async (uid) => {
-    const user = await getUser(uid);
-    setUserData({ isLoading: false, user: user });
+    try {
+      const user = await getUser(uid);
+      setUserData({ isLoading: false, user: user });
+    } catch(e) {
+      notify("Ha ocurrido un problema cargando el usuario", notificationType.error)
+      setUserData(loadingUserData)
+      onClose()
+    }
   };
 
   return (
