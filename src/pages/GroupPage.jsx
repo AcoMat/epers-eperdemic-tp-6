@@ -14,7 +14,7 @@ const GroupPage = () => {
   const { user } = useContext(AuthContext);
   const { onLeaveGroup, onAddMemberToGroup, groups, loading } = useGroups();
   const { leaderboardGroups } = useLeaderboard();
-  const { showCreateGroup } = useContext(DialogContext);
+  const { showCreateGroup, showGroupWithId } = useContext(DialogContext);
 
   return (
     <Background style={backgroundStyle}>
@@ -39,6 +39,7 @@ const GroupPage = () => {
         <section style={{ width: "60%", height: "100%" }}>
           <GroupList
             groups={groups}
+            onGroupPress={showGroupWithId}
             onAddMemberToGroup={onAddMemberToGroup}
             onLeaveGroup={onLeaveGroup}
             user={user}
@@ -46,6 +47,7 @@ const GroupPage = () => {
         </section>
       }
       <Leaderboard
+        onGroupPress={showGroupWithId}
         onLeaveGroup={onLeaveGroup}
         onAddMemberToGroup={onAddMemberToGroup}
         groups={leaderboardGroups}

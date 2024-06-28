@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import { List } from "@mui/material";
 import Group from "../Group/Group";
 
-const GroupList = ({ groups, onAddMemberToGroup, onLeaveGroup, user }) => {
+const GroupList = ({ groups, onAddMemberToGroup, onLeaveGroup, user, onGroupPress }) => {
   const theme = useTheme();
 
   return (
@@ -15,6 +15,7 @@ const GroupList = ({ groups, onAddMemberToGroup, onLeaveGroup, user }) => {
     >
       {groups.map((group) => (
         <Group
+          onGroupPress={onGroupPress}
           key={group.name}
           onLeaveGroup={onLeaveGroup}
           group={group}
