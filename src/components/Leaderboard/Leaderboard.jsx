@@ -1,4 +1,4 @@
-import { Card, List, Typography } from "@mui/material";
+import { Card, List, Typography, hexToRgb } from "@mui/material";
 import React from "react";
 import Leader from "../Leader/Leader";
 
@@ -26,7 +26,6 @@ const Leaderboard = ({ groups, onLeaveGroup, onAddMemberToGroup, user }) => {
 };
 
 const leaderboardContainerStyle = {
-  height: "auto",
   paddingLeft: 32,
   paddingRight: 16,
   paddingTop: 16,

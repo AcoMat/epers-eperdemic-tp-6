@@ -4,8 +4,8 @@ import { CircularProgress } from '@mui/material'
 
 const Loading = React.forwardRef(({style}, ref) => {
     return (
-      <div style={containerFullWidthStyle} ref={ref}>
-        <Background style={{...backgroundStyle, ...style}}>
+      <div style={{...containerFullWidthStyle, ...style}} ref={ref}>
+        <Background style={backgroundStyle}>
             <CircularProgress color='primary' />
         </Background>
       </div>

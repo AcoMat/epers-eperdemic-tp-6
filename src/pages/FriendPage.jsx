@@ -7,18 +7,14 @@ import SearchUser from "../components/SearchUser/SearchUser";
 import useSearch from "../hooks/useSearch";
 import { DialogContext } from "../dialogs/DialogContextProvider"
 import './FriendPage.css'
+import Loading from "../components/Loading/Loading";
 
 const FriendPage = () => {
   const { user, signIn, logout } = useContext(AuthContext);
   const { friends, loading, error, onRemoveFriend, onAddFriend } = useFriends();
-  const showFriends = !loading && friends;
   const friendsIds = friends.map((friend) => friend.uid);
   const { search, changeSearch, users } = useSearch("");
   const { showUserProfile } = useContext(DialogContext)
-
-  if (!user) {
-    return <button onClick={signIn}>login</button>;
-  }
 
   const onFriendClick = (uid) => {
     showUserProfile(uid)
@@ -26,11 +22,15 @@ const FriendPage = () => {
 
   return (
     <Background className='friend-page-container'>
-      <FriendsList
-        friends={friends}
-        onFriendClick={onFriendClick}
-        onRemoveFriend={onRemoveFriend}
-      />
+      {
+        loading ? <Loading style={{width: "60%", height: "100%"}} />
+        :
+        <FriendsList
+          friends={friends}
+          onFriendClick={onFriendClick}
+          onRemoveFriend={onRemoveFriend}/> 
+      }
+      
       <SearchUser
         style={{ flexGrow: 1 }}
         onAddFriend={onAddFriend}

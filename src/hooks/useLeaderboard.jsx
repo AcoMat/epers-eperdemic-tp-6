@@ -14,7 +14,7 @@ const useLeaderboard = () => {
 
     const fetchLeaderboard = () => {
         const groupsCollecion = collection(databaseFirestore, "groups")
-        const q = query(groupsCollecion, orderBy("points", "desc"), limit(5))
+        const q = query(groupsCollecion, orderBy("points", "desc"), limit(10))
         const unsuscribe = onSnapshot(q, (querySnapshot) => {
             let leaders = []
             querySnapshot.forEach(leader => {

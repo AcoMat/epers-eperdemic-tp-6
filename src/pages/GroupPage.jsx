@@ -4,14 +4,15 @@ import { Background } from "../components/Background/Background";
 import GroupList from "../components/GroupsList/GroupsList";
 import useGroups from "../hooks/useGroups";
 import { Fab } from "@mui/material";
-import { GroupAddRounded, GroupsRounded } from "@mui/icons-material";
+import { GroupsRounded } from "@mui/icons-material";
 import Leaderboard from "../components/Leaderboard/Leaderboard";
 import useLeaderboard from "../hooks/useLeaderboard";
 import { DialogContext } from "../dialogs/DialogContextProvider";
+import Loading from "../components/Loading/Loading";
 
 const GroupPage = () => {
   const { user } = useContext(AuthContext);
-  const { onLeaveGroup, onAddMemberToGroup, groups } = useGroups();
+  const { onLeaveGroup, onAddMemberToGroup, groups, loading } = useGroups();
   const { leaderboardGroups } = useLeaderboard();
   const { showCreateGroup } = useContext(DialogContext);
 
@@ -31,14 +32,19 @@ const GroupPage = () => {
       >
         <GroupsRounded />
       </Fab>
-      <section style={{ flexGrow: 1, display: "flex" }}>
-        <GroupList
-          groups={groups}
-          onAddMemberToGroup={onAddMemberToGroup}
-          onLeaveGroup={onLeaveGroup}
-          user={user}
-        />
-      </section>
+      {
+        loading ?
+          <Loading style={{width: "60%", height: "100%"}} />
+          : 
+        <section style={{ width: "60%", height: "100%" }}>
+          <GroupList
+            groups={groups}
+            onAddMemberToGroup={onAddMemberToGroup}
+            onLeaveGroup={onLeaveGroup}
+            user={user}
+          />
+        </section>
+      }
       <Leaderboard
         onLeaveGroup={onLeaveGroup}
         onAddMemberToGroup={onAddMemberToGroup}
