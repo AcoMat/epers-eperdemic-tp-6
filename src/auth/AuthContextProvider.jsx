@@ -17,16 +17,17 @@ const AuthContextProvider = ({ children }) => {
   const [firestoreUser, setFirestoreUser] = useState(loadingFirestoreUser);
   const loadingUser = firestoreUser.isLoading
 
+  const createUserAsync = async (user) => {
+    await createUserIfNotInDatabase(user);
+    setFirestoreUserId({isLoading: false, id: user?.uid});
+  }
+
   useEffect(() => {
-    const createUserAync = async () => {
-      await createUserIfNotInDatabase(user);
-      setFirestoreUserId({isLoading: false, id: user?.uid});
-    };
     if (loading) {
       return setFirestoreUserId(loadingFirestoreUserId)
     }
     if (user) {
-      createUserAync();
+      createUserAsync(user);
     } else {
       setFirestoreUserId(notLoggedInFirestoreUserId)
     }
@@ -60,10 +61,14 @@ const AuthContextProvider = ({ children }) => {
   };
 
   const setUserLocation = async (location) => {
-    const userRef = doc(databaseFirestore, "users", user.uid)
-    await updateDoc(userRef, {
-      location: location
-    })
+    try {
+        const userRef = doc(databaseFirestore, "users", user.uid)
+        await updateDoc(userRef, {
+          location: location
+        })
+    } catch(e) {
+      console.log("Problema actualizando ubicación")
+    }
   }
 
   return (
