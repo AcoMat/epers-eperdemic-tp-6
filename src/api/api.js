@@ -26,8 +26,12 @@ const createVector = async ({type, ubicacionId}) => {
 }
 
 const getVector = async ({vectorId}) => {
-    const response = await axios.get(url + `/vector/${vectorId}`)
-    return response.data
+    const response = await axios.get(url + `/vector/${vectorId}`, {
+        headers: {
+            'ngrok-skip-browser-warning': 'true',
+        }
+    });
+    return response.data;
 }
 
 const isInfectado = async (vectorId) => {
