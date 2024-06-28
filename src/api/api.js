@@ -1,7 +1,8 @@
 import axios from "axios"
-import { arrayRemove, arrayUnion, collection, doc, getDoc, runTransaction, setDoc, updateDoc } from "firebase/firestore"
+import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, increment, runTransaction, setDoc, sum, updateDoc } from "firebase/firestore"
 import { databaseFirestore } from "../configs/firebase"
 import { get } from "firebase/database"
+import { geohashForLocation } from "geofire-common"
 
 const url = process.env.REACT_APP_API_URL
 
@@ -78,7 +79,6 @@ const createGroup = async (groupName, user) => {
         await transaction.update(userRef, {
             group: groupRef
         })
-        console.log("finalizado")
     })    
 }
 
@@ -131,4 +131,21 @@ const leaveGroup = async (groupName, user) => {
     })
 }
 
-export {leaveGroup, joinGroup, getUser, getMapItems, createVector, getVector, isInfectado, createUserIfNotInDatabase, createGroup }
+const recolectScrap = async (coordRef, user) => {
+    const userRef = doc(databaseFirestore, "users", user.uid)
+    runTransaction(databaseFirestore, async (transaction) => {
+        const coordinate = (await transaction.get(coordRef));
+        const user = (await getDoc(userRef)).data() 
+        const userGroupRef = user.group
+        const group = (await transaction.get(userGroupRef));
+
+        if(!coordinate.exists()) { return }
+        if(!group.exists()) { return }
+        await deleteDoc(coordRef)
+        await updateDoc(userGroupRef, {
+            points: increment(10)
+        })
+    })
+}
+
+export {recolectScrap, leaveGroup, joinGroup, getUser, getMapItems, createVector, getVector, isInfectado, createUserIfNotInDatabase, createGroup }

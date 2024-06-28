@@ -16,6 +16,14 @@ export const styles = {
             src: '/location.svg',
         }),
     }),
+    scrapStyle: new Style({
+        image: new Icon({
+            anchor: [1, 1],
+            height: 100,
+            width: 100,
+            src: '/scrap.svg',
+        }),
+    }),
     friendStyle: (friend) => {
         let color;
         if(friend.estaInfectado === null) {
