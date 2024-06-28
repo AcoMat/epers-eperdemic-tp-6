@@ -19,6 +19,8 @@ const MapPage = () => {
     const friendsWithLocation = friends.filter(friend => !!friend.location)
     const { scraps, recolectScrap } = useScraps() 
 
+    console.log(scraps)
+
     useEffect(() => {
       if (isLocationEnabled) {
         fetchMapItems();

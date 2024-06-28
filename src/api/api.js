@@ -1,8 +1,6 @@
 import axios from "axios"
-import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, increment, runTransaction, setDoc, sum, updateDoc } from "firebase/firestore"
+import { arrayRemove, arrayUnion, doc, getDoc, increment, runTransaction, setDoc } from "firebase/firestore"
 import { databaseFirestore } from "../configs/firebase"
-import { get } from "firebase/database"
-import { geohashForLocation } from "geofire-common"
 
 const url = process.env.REACT_APP_API_URL
 
@@ -64,7 +62,7 @@ const createGroup = async (groupName, user) => {
     const userRef = doc(databaseFirestore, "users", user.uid)
     const groupRef = doc(databaseFirestore, "groups", groupName)
     const alreadyExists = (await getDoc(groupRef)).exists()
-    if(alreadyExists) return;
+    if(alreadyExists) { throw new Error("El grupo dado ya existe."); }
     runTransaction(databaseFirestore, async (transaction) => {
         if(user.group) {
             await transaction.update(user.group, {
@@ -138,9 +136,8 @@ const recolectScrap = async (coordRef, user) => {
         const user = (await transaction.get(userRef)).data() 
         const userGroupRef = user.group
         const group = (await transaction.get(userGroupRef));
-
-        if(!coordinate.exists()) { return }
-        if(!group.exists()) { return }
+        if(!coordinate.exists()) { throw new Error("Ya se ha recolectado.") }
+        if(!group.exists()) { throw new Error("El grupo no existe más") }
         await transaction.delete(coordRef)
         await transaction.update(userGroupRef, {
             points: increment(10)
